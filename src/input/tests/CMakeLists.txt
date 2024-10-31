@@ -16,13 +16,17 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_executable(
-        hello_test
-        hello_test.cc
-)
-target_link_libraries(
-        hello_test
-        GTest::gtest_main
+        test_input
+        test_input.cc
 )
 
+target_link_libraries(
+        test_input
+        GTest::gtest_main
+        input_library
+)
+
+#target_include_directories(hello_test PRIVATE ${CMAKE_SOURCE_DIR}/parent)
+
 include(GoogleTest)
-gtest_discover_tests(hello_test)
+gtest_discover_tests(test_input)
