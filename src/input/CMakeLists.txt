@@ -5,6 +5,11 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_library(input_library input.cpp)
 
+target_link_libraries(
+        input_library
+        data_point_library
+)
+
 target_include_directories(input_library PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_subdirectory(tests)
