@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.28.3)
-project(sandbox-cpp)
+project(k23a_project)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -16,12 +16,12 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_executable(
-        test_input
-        test_input.cc
+        test_input_small
+        test_input_small.cc
 )
 
 target_link_libraries(
-        test_input
+        test_input_small
         GTest::gtest_main
         input_library
 )
@@ -29,4 +29,4 @@ target_link_libraries(
 #target_include_directories(hello_test PRIVATE ${CMAKE_SOURCE_DIR}/parent)
 
 include(GoogleTest)
-gtest_discover_tests(test_input)
+gtest_discover_tests(test_input_small)
