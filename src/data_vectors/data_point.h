@@ -1,5 +1,5 @@
 /*
-* data_point.h
+* data_vector.h
 * --------------------------------------------------------------------------------
 * A class that represents a data point comprised of components of unknown size.
 * --------------------------------------------------------------------------------
@@ -15,21 +15,21 @@
 #include <vector>
 
 template <typename T>
-class DataPoint {
-    std::vector<T> components;
+class DataVector {
+    std::vector<T> data;
 
 public:
-    explicit DataPoint(const std::vector<T>& components);
+    explicit DataVector(const std::vector<T>& data);
     int getSize() const;
 };
 
 template <typename T>
-DataPoint<T>::DataPoint(const std::vector<T>& components)
-	: components(components) {}
+DataVector<T>::DataVector(const std::vector<T>& data)
+	: data(data) {}
 
 template <typename T>
-int DataPoint<T>::getSize() const {
-	return components.size();
+int DataVector<T>::getSize() const {
+	return data.size();
 }
 
 

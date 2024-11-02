@@ -17,7 +17,7 @@ enable_testing()
 
 add_executable(
         test_data_point
-        test_data_point.cc
+        test_data_vectors.cc
 )
 
 target_link_libraries(
