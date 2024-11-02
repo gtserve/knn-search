@@ -12,6 +12,7 @@ FetchContent_Declare(
 
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
+include(GoogleTest)
 
 enable_testing()
 
@@ -26,7 +27,17 @@ target_link_libraries(
         input_library
 )
 
-#target_include_directories(hello_test PRIVATE ${CMAKE_SOURCE_DIR}/parent)
-
-include(GoogleTest)
 gtest_discover_tests(test_input_small)
+
+add_executable(
+        test_input
+        test_input.cc
+)
+
+target_link_libraries(
+        test_input
+        GTest::gtest_main
+        input_library
+)
+
+gtest_discover_tests(test_input)
