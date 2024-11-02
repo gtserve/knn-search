@@ -16,17 +16,17 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_executable(
-        test_data_point
+        test_data_vector
         test_data_vectors.cc
 )
 
 target_link_libraries(
-        test_data_point
+        test_data_vector
         GTest::gtest_main
-        data_point_library
+        data_vector_library
 )
 
 #target_include_directories(hello_test PRIVATE ${CMAKE_SOURCE_DIR}/parent)
 
 include(GoogleTest)
-gtest_discover_tests(test_data_point)
+gtest_discover_tests(test_data_vector)

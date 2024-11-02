@@ -7,7 +7,7 @@ add_library(input_library input.cpp)
 
 target_link_libraries(
         input_library
-        data_point_library
+        data_vector_library
 )
 
 target_include_directories(input_library PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

@@ -8,8 +8,8 @@
 * --------------------------------------------------------------------------------
 */
 
-#ifndef DATA_POINT_H
-#define DATA_POINT_H
+#ifndef DATA_VECTOR_H
+#define DATA_VECTOR_H
 
 
 #include <vector>
@@ -33,4 +33,4 @@ int DataVector<T>::getSize() const {
 }
 
 
-#endif //DATA_POINT_H
+#endif //DATA_VECTOR_H

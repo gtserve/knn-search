@@ -15,7 +15,7 @@
 #include <fstream>
 #include <vector>
 
-#include "../data_vectors/data_point.h"
+#include "../data_vectors/data_vector.h"
 
 
 template <typename T>

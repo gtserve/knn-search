@@ -21,28 +21,28 @@ using namespace std;
 
 TEST(InputSmallTest, ReadBaseVectors) {
     string data_path = DATA_PATH;
-    vector<DataVector<float>> data_points;
-    readVectors<float> (data_path + "/siftsmall_base.fvecs", data_points);
-    EXPECT_EQ(data_points.size(), 10000);
+    vector<DataVector<float>> data_vectors;
+    readVectors<float> (data_path + "/siftsmall_base.fvecs", data_vectors);
+    EXPECT_EQ(data_vectors.size(), 10000);
 }
 
 TEST(InputSmallTest, ReadQueryVectors) {
     string data_path = DATA_PATH;
-    vector<DataVector<float>> data_points;
-    readVectors<float> (data_path + "/siftsmall_query.fvecs", data_points);
-    EXPECT_EQ(data_points.size(), 100);
+    vector<DataVector<float>> data_vectors;
+    readVectors<float> (data_path + "/siftsmall_query.fvecs", data_vectors);
+    EXPECT_EQ(data_vectors.size(), 100);
 }
 
 TEST(InputSmallTest, ReadLearnVectors) {
     string data_path = DATA_PATH;
-    vector<DataVector<float>> data_points;
-    readVectors<float> (data_path + "/siftsmall_learn.fvecs", data_points);
-    EXPECT_EQ(data_points.size(), 25000);
+    vector<DataVector<float>> data_vectors;
+    readVectors<float> (data_path + "/siftsmall_learn.fvecs", data_vectors);
+    EXPECT_EQ(data_vectors.size(), 25000);
 }
 
 TEST(InputSmallTest, ReadGroundTruthVectors) {
     string data_path = DATA_PATH;
-    vector<DataVector<int>> data_points;
-    readVectors<int> (data_path + "/siftsmall_groundtruth.ivecs", data_points);
-    EXPECT_EQ(data_points.size(), 100);
+    vector<DataVector<int>> data_vectors;
+    readVectors<int> (data_path + "/siftsmall_groundtruth.ivecs", data_vectors);
+    EXPECT_EQ(data_vectors.size(), 100);
 }
