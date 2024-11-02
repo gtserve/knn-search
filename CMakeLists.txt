@@ -3,6 +3,10 @@ project(k23a_project)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_subdirectory(tests)
+add_subdirectory(src/input)
+add_subdirectory(src/data_vectors)
 
-add_executable(hello src/main.cpp)
+add_executable(
+        hello
+        main.cpp
+)
