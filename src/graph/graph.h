@@ -38,6 +38,8 @@ public:
 
     int get_vertices(); //return number of vertices in graph
     vector_node<T> *get_node(int);
+
+    set<int> getNodeNeighbours(int id);
 };
 
 //initialize graph
@@ -94,6 +96,11 @@ int graph<T>::get_vertices() {
 template<typename T>
 vector_node<T> *graph<T>::get_node(int id) {
     return this->nodes[id];
+}
+
+template <typename T>
+set<int> graph<T>::getNodeNeighbours(const int id) {
+    return this->neighbours[id];
 }
 
 template<typename T>

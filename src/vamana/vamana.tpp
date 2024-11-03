@@ -53,7 +53,7 @@ set<pair<int, double>, compare_by_second_value> greedy_graph_search(graph<T> *gr
 
         //BUILD NEIGHBOR SIZE FUNCTION!!!!!!!
         //iterate through current exploring node's neighbors and add to list
-        for (const auto &neighbour_id : graph->neighbours[cur_node_id]) {
+        for (const auto &neighbour_id : graph->getNodeNeighbours(cur_node_id)) {
             pair<int, double> new_pair;
 
             //BUILD GET COORDINATES FUNCTION
@@ -86,7 +86,39 @@ set<pair<int, double>, compare_by_second_value> greedy_graph_search(graph<T> *gr
     return neighbors;
 }
 
-// Robust Prune
+// template <typename T>
+// void robustPrune(graph<T>& G, int p, set<int> V, const float a, const int R) {
+//     vector_node<T> *Np = G.nodes[p];
+//
+//     for (int n: G.neighbours[p]) V.insert(n);
+//     V.erase(p);
+//     G.neighbours[p].clear();
+//
+//     while (!V.empty()) {
+//         int c_best;
+//         double min_distance = 1e10;
+//         for (int c: V) {
+//             Node<T> *Nc = G.nodes[c];
+//             double candidate_distance = Np->getDistance(Nc);
+//             if (candidate_distance < min_distance) {
+//                 min_distance = candidate_distance;
+//                 c_best = c;
+//             }
+//         }
+//
+//         Node<T> *Nc_best = G.nodes[c_best];
+//         G.neighbours[p].push_back(c_best);
+//
+//         if (G.neighbours[p].size() == R) break;
+//
+//         for (int c: V) {
+//             Node<T> *Nc = G.nodes[c];
+//             if (a * Nc_best->getDistance(Nc) <= Np->getDistance(Nc)) {
+//                 V.erase(c);
+//             }
+//         }
+//     }
+// }
 
 // Vamana
 
