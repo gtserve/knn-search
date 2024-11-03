@@ -9,7 +9,7 @@
 neighbor::neighbor(int node_id, list<int> parent_instances, list<int> instances)
 {
     this->node_id = node_id;
-    this->euclidean_distance=::euclidean_distance(parent_instances, instances);
+    this->euclidean_distance=euclidean_distance(parent_instances, instances);
 }
 
 int neighbor::get_distance()
