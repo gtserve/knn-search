@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <vector>
+#include <cmath>
 
 #include "../data_vector.h"
 
@@ -19,6 +20,16 @@ TEST(DataPointTest, OneVector) {
 
 TEST(DataPointTest, FiveVector) {
   vector<int> v1 = {1, 2, 3, 4, 5};
-  DataVector<int> dv  (v1);
+  DataVector<int> dv(v1);
   EXPECT_EQ(dv.getSize(), 5);
+}
+
+TEST(TestEclidean, Test1) {
+  vector<int> v1 = {4, 1};
+  vector<int> v2 = {3, 0};
+
+  DataVector<int> dv1(v1);
+  DataVector<int> dv2(v2);
+
+  EXPECT_EQ(dv1.getDistance(&dv2), sqrt(2));
 }
