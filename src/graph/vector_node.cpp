@@ -4,7 +4,9 @@
 
 #include <iostream>
 #include "vector_node.h"
+#include <utility>
 
+using namespace std;
 
 
 vector_node::vector_node(int node_id, list<int> instances)
@@ -26,14 +28,32 @@ list<int> vector_node::get_coordinates()
     return this->coordinates;
 }
 
-void vector_node::add_neighbor(neighbor n)
+int vector_node::get_neighbors_size()
 {
-    this->neighbors.push_back(n);
+  return this->neighbors.size();
 }
 
-void vector_node::delete_neighbor(neighbor n)
+vector<vector_node*> vector_node::get_neighbors_list()
 {
-    for(int i = 0; i < this->neighbors.size(); i++)
+    vector<vector_node*> neighbors_list;
+    auto it = this->neighbors.begin();
+    while(it != this->neighbors.end())
+    {
+      neighbors_list.push_back(it->first);
+      it++;
+    }
+
+    return neighbors_list;
+}
+
+void vector_node::add_neighbor(vector_node* n)
+{
+    this->neighbors.insert(make_pair(n,euclidean_distance(this->get_coordinates(),n->get_coordinates())));
+}
+
+void vector_node::delete_neighbor(vector_node* n)
+{
+    /*for(int i = 0; i < this->neighbors.size(); i++)
     {
         if(this->neighbors[i].get_node_id() == n.get_node_id())
         {
@@ -41,6 +61,17 @@ void vector_node::delete_neighbor(neighbor n)
         }
     }
     return;
+    */
+    auto it = this->neighbors.begin();
+    while(it != this->neighbors.end())
+    {
+      if(it->first == n)
+      {
+        this->neighbors.erase(it);
+        return;
+      }
+      it++;
+    }
 }
 
 
