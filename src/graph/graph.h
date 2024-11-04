@@ -45,7 +45,7 @@ public:
 //initialize graph
 template<typename T>
 graph<T>::graph(const vector<DataVector<T> *> vectors) {
-    for (int i = 0; i <= vectors.size(); i++) {
+    for (int i = 0; i < vectors.size(); i++) {
         auto *new_node = new vector_node<T>(i, vectors[i]);
         this->nodes.push_back(new_node);
     }
@@ -53,7 +53,7 @@ graph<T>::graph(const vector<DataVector<T> *> vectors) {
 
 template<typename T>
 graph<T>::~graph() {
-    for (int i = 0; i <= this->nodes.size(); i++) {
+    for (int i = 0; i < this->nodes.size(); i++) {
         delete(nodes[i]);
     }
 }
@@ -83,7 +83,8 @@ void graph<T>::generate_random_graph(const int R) {
         while (this->neighbours[i].size() < R) {
             //find random node in graph to be connected to i
             int cur_neighbor = rand() % this->nodes.size();
-            this->neighbours[i].insert(cur_neighbor);
+            if (cur_neighbor != i)
+                this->neighbours[i].insert(cur_neighbor);
         }
     }
 }

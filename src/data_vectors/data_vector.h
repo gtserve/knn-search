@@ -17,26 +17,32 @@
 
 template <typename T>
 class DataVector {
-    std::vector<T> data;
+    std::vector<T> components;
 
 public:
     explicit DataVector(const std::vector<T> data);
     int getSize() const;
+    std::vector<T> getComponents() const;
     double getDistance(DataVector<T>* target) const;
 };
 
 template <typename T>
 DataVector<T>::DataVector(const std::vector<T> data)
-	: data(data) {}
+	: components(data) {}
 
 template <typename T>
 int DataVector<T>::getSize() const {
-	return data.size();
+	return components.size();
+}
+
+template <typename T>
+std::vector<T> DataVector<T>::getComponents() const {
+    return components;
 }
 
 template<typename T>
 double DataVector<T>::getDistance(DataVector<T> *target) const {
-    return euclidean_distance(data, target->data);
+    return euclidean_distance(components, target->getComponents());
 }
 
 

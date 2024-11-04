@@ -3,7 +3,11 @@
 //
 
 #include "utility_functions.h"
+#include <random>
 #include <vector>
+#include <algorithm>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -12,4 +16,17 @@ bool compare_by_second_value::operator()(const pair<int, double> &p1, const pair
         return p1.first < p2.first;
     }
     return p1.second < p2.second;
+}
+
+vector<int> randomPermutation(const int N) {
+    // Create sequence 1, 2, ... N
+    vector<int> sequence(N);
+    for (int i = 0; i < N; i++) {
+        sequence[i] = i + 1;
+    }
+
+    // Shuffle sequence.
+    srand(time(NULL));
+    shuffle(sequence.begin(), sequence.end(), std::mt19937(std::random_device()()));
+    return sequence;
 }
