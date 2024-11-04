@@ -19,7 +19,7 @@
 
 
 template <typename T>
-void readVectors(const std::string &file_name, std::vector<DataVector<T>>& data_vectors) {
+void readVectors(const std::string &file_name, std::vector<std::vector<T>>& vectors) {
     std::ifstream ifs(file_name, std::ios::binary);
 
     if (!ifs.is_open()) {
@@ -35,8 +35,7 @@ void readVectors(const std::string &file_name, std::vector<DataVector<T>>& data_
 
         std::vector<T> v(dimension);
         ifs.read(reinterpret_cast<char *>(v.data()), dimension * sizeof(T));
-        DataVector<T> dv(v);
-        data_vectors.push_back(dv);
+        vectors.push_back(v);
     }
 }
 

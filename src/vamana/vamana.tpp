@@ -9,11 +9,16 @@
 #include <data_vector.h>
 
 template<typename T>
-pair<set<int>, set<int> > greedy_graph_search(graph<T> *graph, const int starting,
-                                              const int query,
-                                              const int K, const int L) {
+pair<set<int>, set<int> > greedy_graph_search(
+        graph<T> *graph,
+        const int starting,
+        const int query_id,
+        vector<T> query_vector,
+        const int K,
+        const int L,
+        const bool vamana) {
     vector_node<T> *starting_node = graph->get_node(starting);
-    vector_node<T> *query_node = graph->get_node(query);
+    // vector_node<T> *query_node = graph->get_node(query);
 
     //set that holds node ids and distances that have been visited during the search
     //create set
@@ -30,7 +35,7 @@ pair<set<int>, set<int> > greedy_graph_search(graph<T> *graph, const int startin
     pair<int, double> temp_pair;
     temp_pair.first = starting_node->get_node_id();
     // temp_pair.second = euclidean_distance(starting->get_coordinates(), query->get_coordinates());
-    temp_pair.second = starting_node->getDistance(query_node);;
+    temp_pair.second = starting_node->getDistance(query_vector);;
 
     //temp_map[starting->get_node_id()] = euclidean_distance(starting->get_coordinates(),querry->get_coordinates());
     //neighbors.insert({starting->get_node_id(),euclidean_distance(starting->get_coordinates(),querry->get_coordinates())});
@@ -63,11 +68,11 @@ pair<set<int>, set<int> > greedy_graph_search(graph<T> *graph, const int startin
 
             //BUILD GET COORDINATES FUNCTION
             new_pair.first = neighbour_id;
-            if (query == neighbour_id) continue;
+            if (vamana && query_id == neighbour_id) continue;
             vector_node<T> *neighbor_node = graph->get_node(neighbour_id);
             // new_pair.second = euclidean_distance(list_of_neighbors[0]->get_coordinates(), query->get_coordinates());
             //new_map[list_of_neighbors[0].get_node_id()] = euclidean_distance(list_of_neighbors[0].get_coordinates(),querry->get_coordinates());
-            new_pair.second = neighbor_node->getDistance(query_node);
+            new_pair.second = neighbor_node->getDistance(query_vector);
 
             //insert node to set of neighbors
             neighbors.insert(new_pair);
@@ -98,6 +103,7 @@ pair<set<int>, set<int> > greedy_graph_search(graph<T> *graph, const int startin
 
     return {neighbors_ids, visited_ids};
 }
+
 
 template<typename T>
 void robustPrune(graph<T> *G, int p, set<int> V, const float a, const int R) {
@@ -134,21 +140,21 @@ void robustPrune(graph<T> *G, int p, set<int> V, const float a, const int R) {
 }
 
 template<typename T>
-void vamana(graph<T> *G, vector<DataVector<T> *> *vectors, const float a, const int L_max, const int R) {
+void vamana(graph<T> *G, vector<vector<T>> &data_set, const float a, const int L_max, const int R) {
     G->generate_random_graph(R);
-    G->print_graph();
-    cout << endl;
+    // G->print_graph();
+    // cout << endl;
 
-    vector<vector<T> > dataset;
-    for (const auto v: *vectors) {
-        dataset.push_back(v->getComponents());
-    }
-    int s = medoid(dataset);
+    // vector<vector<T> > dataset;
+    // for (const auto v: *vectors) {
+    //     dataset.push_back(v->getComponents());
+    // }
+    int s = medoid(data_set);
 
-    vector<int> rand_sequence = randomPermutation(vectors->size());
+    vector<int> rand_sequence = randomPermutation(data_set.size());
 
     for (const int i: rand_sequence) {
-        pair<set<int>, set<int> > temp_pair = greedy_graph_search(G, s, i, 1, L_max);
+        pair<set<int>, set<int> > temp_pair = greedy_graph_search(G, s, i, data_set[i], 1, L_max, true);
         set<int> L = temp_pair.first;
         set<int> V = temp_pair.second;
 

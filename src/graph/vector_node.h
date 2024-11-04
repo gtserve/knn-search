@@ -22,10 +22,11 @@ class vector_node {
 private:
     int node_id;
     DataVector<T> *data_vector;
-    set<pair<vector_node *, int> > neighbors;
-    //vector<neighbor> neighbors;//vector that stores nodes neighbors
+
 public:
-    vector_node(const int node_id, DataVector<T> *data_vector); //create node
+    vector_node(const int node_id, vector<T> components); //create node
+
+    ~vector_node();
 
     int get_node_id();
 
@@ -33,19 +34,18 @@ public:
 
     double getDistance(vector_node<T>* other);
 
-    // int get_neighbors_size();
-    //
-    // vector<vector_node *> get_neighbors_list();
-    //
-    // void add_neighbor(vector_node *);
-    //
-    // void delete_neighbor(vector_node *);
+    double getDistance(vector<T> other);
 };
 
 template<typename T>
-vector_node<T>::vector_node(const int node_id, DataVector<T> *data_vector) {
+vector_node<T>::vector_node(const int node_id, vector<T> components) {
     this->node_id = node_id;
-    this->data_vector = data_vector;
+    this->data_vector = new DataVector<T>(components);
+}
+
+template<typename T>
+vector_node<T>::~vector_node() {
+    delete(this->data_vector);
 }
 
 template<typename T>
@@ -64,56 +64,10 @@ double vector_node<T>::getDistance(vector_node<T> *other) {
     return this->data_vector->getDistance(other->get_coordinates());
 }
 
-
-// template<typename T>
-// int vector_node<T>::vector_node::get_neighbors_size()
-// {
-//     return this->neighbors.size();
-// }
-//
-// template<typename T>
-// vector<vector_node*> vector_node<T>::vector_node::get_neighbors_list()
-// {
-//     vector<vector_node*> neighbors_list;
-//     auto it = this->neighbors.begin();
-//     while(it != this->neighbors.end())
-//     {
-//         neighbors_list.push_back(it->first);
-//         it++;
-//     }
-//
-//     return neighbors_list;
-// }
-//
-// template<typename T>
-// void vector_node<T>::vector_node::add_neighbor(vector_node* n)
-// {
-//     this->neighbors.insert(make_pair(n,euclidean_distance(this->get_coordinates(),n->get_coordinates())));
-// }
-//
-// template<typename T>
-// void vector_node<T>::vector_node::delete_neighbor(vector_node* n)
-// {
-//     /*for(int i = 0; i < this->neighbors.size(); i++)
-//     {
-//         if(this->neighbors[i].get_node_id() == n.get_node_id())
-//         {
-//                 neighbors.erase(neighbors.begin() + i);
-//         }
-//     }
-//     return;
-//     */
-//     auto it = this->neighbors.begin();
-//     while(it != this->neighbors.end())
-//     {
-//         if(it->first == n)
-//         {
-//             this->neighbors.erase(it);
-//             return;
-//         }
-//         it++;
-//     }
-// }
+template<typename T>
+double vector_node<T>::getDistance(vector<T> other) {
+    return this->data_vector->getDistance(other);
+}
 
 
 #endif //VECTOR_NODE_H

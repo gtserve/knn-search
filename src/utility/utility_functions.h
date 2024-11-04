@@ -10,6 +10,7 @@
 #include <cmath>
 #include <vector>
 #include <algorithm>
+#include <set>
 
 using namespace std;
 
@@ -20,6 +21,8 @@ struct compare_by_second_value
 };
 
 vector<int> randomPermutation(const int N);
+
+float recall(const set<int> &X, const set<int> &T);
 
 // function to calculate euclidean distance between two vertices. Vertices may have many instances
 template<typename T>

@@ -37,15 +37,15 @@ TEST(TestInput, EmptyVectorFile) {
     writeVectorsToBinaryFile(file_name, vectors_empty);
 
     // Read binary file.
-    vector<DataVector<int>> data_vectors;
-    readVectors<int> (file_name, data_vectors);
+    vector<vector<int>> vectors;
+    readVectors<int> (file_name, vectors);
 
     // Delete binary file.
     if (remove(file_name) != 0) {
         cerr << "[ERROR]: Could not remove file: '" << file_name << "'" << endl;;
     }
 
-    EXPECT_EQ(data_vectors.size(), 0);
+    EXPECT_EQ(vectors.size(), 0);
 }
 
 TEST(TestInput, OneVectorFile) {

@@ -10,6 +10,14 @@ add_subdirectory(src/graph)
 add_subdirectory(src/vamana)
 
 add_executable(
-        hello
+        main
         main.cpp
+)
+
+target_link_libraries(
+        main
+        input_library
+        data_vector_library
+        graph_library
+        vamana_library
 )
