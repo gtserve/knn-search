@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.28.3)
-project(project-k23a)
+project(k23a_project)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -12,16 +12,19 @@ FetchContent_Declare(
 
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
+include(GoogleTest)
+
 enable_testing()
 
 add_executable(
-        test_distance
-        test_distance.cpp
-)
-target_link_libraries(
-        test_distance
-        GTest::gtest_main
+        test_util
+        test_util.cc
 )
 
-include(GoogleTest)
-gtest_discover_tests(test_distance)
+target_link_libraries(
+        test_util
+        GTest::gtest_main
+        util_library
+)
+
+gtest_discover_tests(test_util)

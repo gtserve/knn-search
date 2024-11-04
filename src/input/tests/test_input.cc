@@ -24,7 +24,7 @@ void writeVectorsToBinaryFile(const string& file_name, const vector<vector<T>>& 
         int dimension = vectors[i].size();
         ofs.write(reinterpret_cast<const char*>(&dimension), sizeof(dimension));
 
-        ofs.write(reinterpret_cast<const char*>(vectors[i].data()), dimension * sizeof(T));
+        ofs.write(reinterpret_cast<const char*>(vectors[i].components()), dimension * sizeof(T));
     }
 
     ofs.close();

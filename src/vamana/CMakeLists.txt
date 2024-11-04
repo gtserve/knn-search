@@ -3,7 +3,7 @@ project(k23a_project)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_library(vamana_library vamana.tpp)
+add_library(vamana_library vamana.cpp)
 
 target_link_libraries(
         vamana_library
@@ -12,4 +12,4 @@ target_link_libraries(
 
 target_include_directories(vamana_library PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-#add_subdirectory(tests)
+add_subdirectory(tests)

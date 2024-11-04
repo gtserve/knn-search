@@ -6,12 +6,12 @@
 
 #include <graph.h>
 #include <utility_functions.h>
-#include "vamana.h"
+#include <data_vector.h>
 
 template<typename T>
-set<pair<int, double>, compare_by_second_value> greedy_graph_search(graph<T> *graph, const int starting, const int query,
-                                                                 const int K, const int L) {
-
+pair<set<int>, set<int> > greedy_graph_search(graph<T> *graph, const int starting,
+                                              const int query,
+                                              const int K, const int L) {
     vector_node<T> *starting_node = graph->get_node(starting);
     vector_node<T> *query_node = graph->get_node(query);
 
@@ -19,11 +19,13 @@ set<pair<int, double>, compare_by_second_value> greedy_graph_search(graph<T> *gr
     //create set
     //vector<int> visited_nodes;
     set<pair<int, double>, compare_by_second_value> visited_nodes;
+    set<int> visited_ids;
 
     //create a set of pairs(node id,euclidean distance) that hold nodes found in search
     //create set
     //vector<map<int,int>> neighbors;
     set<pair<int, double>, compare_by_second_value> neighbors;
+    set<int> neighbors_ids;
 
     pair<int, double> temp_pair;
     temp_pair.first = starting_node->get_node_id();
@@ -36,8 +38,11 @@ set<pair<int, double>, compare_by_second_value> greedy_graph_search(graph<T> *gr
     //sort(neighbors.begin(),neighbors.end(),compare_by_second_value);
 
     set<pair<int, double>, compare_by_second_value> difference;
-    set_difference(visited_nodes.begin(), visited_nodes.end(), neighbors.begin(), neighbors.end(),
-                   inserter(difference, difference.begin()));
+    set_difference(
+        neighbors.begin(), neighbors.end(),
+        visited_nodes.begin(), visited_nodes.end(),
+        inserter(difference, difference.begin())
+    );
 
     while (!difference.empty()) {
         auto iter = difference.begin();
@@ -53,15 +58,16 @@ set<pair<int, double>, compare_by_second_value> greedy_graph_search(graph<T> *gr
 
         //BUILD NEIGHBOR SIZE FUNCTION!!!!!!!
         //iterate through current exploring node's neighbors and add to list
-        for (const auto &neighbour_id : graph->getNodeNeighbours(cur_node_id)) {
+        for (const auto &neighbour_id: graph->getNodeNeighbours(cur_node_id)) {
             pair<int, double> new_pair;
 
             //BUILD GET COORDINATES FUNCTION
             new_pair.first = neighbour_id;
+            if (query == neighbour_id) continue;
             vector_node<T> *neighbor_node = graph->get_node(neighbour_id);
             // new_pair.second = euclidean_distance(list_of_neighbors[0]->get_coordinates(), query->get_coordinates());
             //new_map[list_of_neighbors[0].get_node_id()] = euclidean_distance(list_of_neighbors[0].get_coordinates(),querry->get_coordinates());
-            new_pair.second = neighbor_node->get_distance(query_node);
+            new_pair.second = neighbor_node->getDistance(query_node);
 
             //insert node to set of neighbors
             neighbors.insert(new_pair);
@@ -74,8 +80,12 @@ set<pair<int, double>, compare_by_second_value> greedy_graph_search(graph<T> *gr
             }
         }
 
-        set_difference(visited_nodes.begin(), visited_nodes.end(), neighbors.begin(), neighbors.end(),
-                       inserter(difference, difference.begin()));
+        difference.clear();
+        set_difference(
+            neighbors.begin(), neighbors.end(),
+            visited_nodes.begin(), visited_nodes.end(),
+            inserter(difference, difference.begin())
+        );
     }
 
     //return set of k nodes closest to querry
@@ -83,43 +93,79 @@ set<pair<int, double>, compare_by_second_value> greedy_graph_search(graph<T> *gr
     auto last = neighbors.end();
     neighbors.erase(first, last);
 
-    return neighbors;
+    for (const auto pair: neighbors) neighbors_ids.insert(pair.first);
+    for (const auto pair: visited_nodes) visited_ids.insert(pair.first);
+
+    return {neighbors_ids, visited_ids};
 }
 
-// template <typename T>
-// void robustPrune(graph<T>& G, int p, set<int> V, const float a, const int R) {
-//     vector_node<T> *Np = G.nodes[p];
-//
-//     for (int n: G.neighbours[p]) V.insert(n);
-//     V.erase(p);
-//     G.neighbours[p].clear();
-//
-//     while (!V.empty()) {
-//         int c_best;
-//         double min_distance = 1e10;
-//         for (int c: V) {
-//             Node<T> *Nc = G.nodes[c];
-//             double candidate_distance = Np->getDistance(Nc);
-//             if (candidate_distance < min_distance) {
-//                 min_distance = candidate_distance;
-//                 c_best = c;
-//             }
-//         }
-//
-//         Node<T> *Nc_best = G.nodes[c_best];
-//         G.neighbours[p].push_back(c_best);
-//
-//         if (G.neighbours[p].size() == R) break;
-//
-//         for (int c: V) {
-//             Node<T> *Nc = G.nodes[c];
-//             if (a * Nc_best->getDistance(Nc) <= Np->getDistance(Nc)) {
-//                 V.erase(c);
-//             }
-//         }
-//     }
-// }
+template<typename T>
+void robustPrune(graph<T> *G, int p, set<int> V, const float a, const int R) {
+    vector_node<T> *Np = G->get_node(p);
 
-// Vamana
+    for (const int n: G->getNodeNeighbours(p)) V.insert(n);
+    V.erase(p);
+    G->clearNeighbours(p);
+
+    while (!V.empty()) {
+        int c_best;
+        double min_distance = 1e10;
+        for (const int c: V) {
+            vector_node<T> *Nc = G->get_node(c);
+            double candidate_distance = Np->getDistance(Nc);
+            if (candidate_distance < min_distance) {
+                min_distance = candidate_distance;
+                c_best = c;
+            }
+        }
+
+        vector_node<T> *Nc_best = G->get_node(c_best);
+        G->addEdgeDirected(p, c_best);
+
+        if (G->getNodeNeighbours(p).size() == R) break;
+
+        set<int> V_copy = V;
+        for (const int c: V_copy) {
+            vector_node<T> *Nc = G->get_node(c);
+            if (a * Nc_best->getDistance(Nc) <= Np->getDistance(Nc))
+                V.erase(c);
+        }
+    }
+}
+
+template<typename T>
+void vamana(graph<T> *G, vector<DataVector<T> *> *vectors, const float a, const int L_max, const int R) {
+    G->generate_random_graph(R);
+    G->print_graph();
+    cout << endl;
+
+    vector<vector<T> > dataset;
+    for (const auto v: *vectors) {
+        dataset.push_back(v->getComponents());
+    }
+    int s = medoid(dataset);
+
+    vector<int> rand_sequence = randomPermutation(vectors->size());
+
+    for (const int i: rand_sequence) {
+        pair<set<int>, set<int> > temp_pair = greedy_graph_search(G, s, i, 1, L_max);
+        set<int> L = temp_pair.first;
+        set<int> V = temp_pair.second;
+
+        robustPrune(G, i, V, a, R);
+        // G->print_graph();
+
+        for (const auto j: G->getNodeNeighbours(i)) {
+            if (G->getNodeNeighbours(j).size() + 1 > R) {
+                set<int> C;
+                for (const int n: G->getNodeNeighbours(j)) C.insert(n);
+                C.insert(i);
+                robustPrune(G, j, C, a, R);
+            } else {
+                G->addEdgeDirected(j, i);
+            }
+        }
+    }
+}
 
 #endif // VAMANA_TPP
