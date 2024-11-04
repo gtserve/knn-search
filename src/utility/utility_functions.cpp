@@ -38,6 +38,7 @@ float recall(const set<int> &X, const set<int> &T) {
         X.begin(), X.end(),
         T.begin(), T.end(),
         inserter(I, I.begin()));
+    cout << endl;
     for (const auto &i : I) {cout << i << endl;}
     return static_cast<float> (I.size()) / static_cast<float> (X.size());
 }
