@@ -40,6 +40,12 @@ public:
     vector_node<T> *get_node(int);
 
     set<int> getNodeNeighbours(int id);
+
+    void addEdgeDirected(int u, int v);
+
+    void deleteEdgeDirected(int u, int v);
+
+    void clearNeighbours(int id);
 };
 
 //initialize graph
@@ -113,6 +119,21 @@ void graph<T>::print_graph() {
         }
         cout << endl;
     }
+}
+
+template <typename T>
+void graph<T>::addEdgeDirected(const int u, const int v) {
+    this->neighbours[u].insert(v);
+}
+
+template <typename T>
+void graph<T>::deleteEdgeDirected(const int u, const int v) {
+    this->neighbours[u].erase(v);
+}
+
+template <typename T>
+void graph<T>::clearNeighbours(const int id) {
+    this->neighbours[id].clear();
 }
 
 // //add new vertice in vertice vector

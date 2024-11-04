@@ -105,7 +105,7 @@ void robustPrune(graph<T> *G, int p, set<int> V, const float a, const int R) {
 
     for (const int n: G->getNodeNeighbours(p)) V.insert(n);
     V.erase(p);
-    G->getNodeNeighbours(p).clear();
+    G->clearNeighbours(p);
 
     while (!V.empty()) {
         int c_best;
@@ -120,28 +120,32 @@ void robustPrune(graph<T> *G, int p, set<int> V, const float a, const int R) {
         }
 
         vector_node<T> *Nc_best = G->get_node(c_best);
-        G->getNodeNeighbours(p).insert(c_best);
+        G->addEdgeDirected(p, c_best);
 
         if (G->getNodeNeighbours(p).size() == R) break;
 
-        for (const int c: V) {
+        set<int> V_copy = V;
+        for (const int c: V_copy) {
             vector_node<T> *Nc = G->get_node(c);
-            if (a * Nc_best->getDistance(Nc) <= Np->getDistance(Nc)) V.erase(c);
+            if (a * Nc_best->getDistance(Nc) <= Np->getDistance(Nc))
+                V.erase(c);
         }
     }
 }
 
 template<typename T>
-void vamana(graph<T> *G, vector<DataVector<T> *> vectors, const float a, const int L_max, const int R) {
+void vamana(graph<T> *G, vector<DataVector<T> *> *vectors, const float a, const int L_max, const int R) {
     G->generate_random_graph(R);
+    G->print_graph();
+    cout << endl;
 
     vector<vector<T> > dataset;
-    for (const auto v: vectors) {
+    for (const auto v: *vectors) {
         dataset.push_back(v->getComponents());
     }
     int s = medoid(dataset);
 
-    vector<int> rand_sequence = randomPermutation(vectors.size());
+    vector<int> rand_sequence = randomPermutation(vectors->size());
 
     for (const int i: rand_sequence) {
         pair<set<int>, set<int> > temp_pair = greedy_graph_search(G, s, i, 1, L_max);
@@ -149,6 +153,7 @@ void vamana(graph<T> *G, vector<DataVector<T> *> vectors, const float a, const i
         set<int> V = temp_pair.second;
 
         robustPrune(G, i, V, a, R);
+        // G->print_graph();
 
         for (const auto j: G->getNodeNeighbours(i)) {
             if (G->getNodeNeighbours(j).size() + 1 > R) {
@@ -157,7 +162,7 @@ void vamana(graph<T> *G, vector<DataVector<T> *> vectors, const float a, const i
                 C.insert(i);
                 robustPrune(G, j, C, a, R);
             } else {
-                G->getNodeNeighbours(j).insert(i);
+                G->addEdgeDirected(j, i);
             }
         }
     }

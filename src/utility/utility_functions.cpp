@@ -19,10 +19,10 @@ bool compare_by_second_value::operator()(const pair<int, double> &p1, const pair
 }
 
 vector<int> randomPermutation(const int N) {
-    // Create sequence 1, 2, ... N
+    // Create sequence 0, 1, 2, ... N-1
     vector<int> sequence(N);
     for (int i = 0; i < N; i++) {
-        sequence[i] = i + 1;
+        sequence[i] = i;
     }
 
     // Shuffle sequence.
