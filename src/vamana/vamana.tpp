@@ -21,6 +21,7 @@ pair<set<int>, set<int> > greedy_graph_search(
     // vector_node<T> *query_node = graph->get_node(query);
 
     //set that holds node ids and distances that have been visited during the search
+
     //create set
     //vector<int> visited_nodes;
     // set<pair<int, double>, compare_by_second_value> visited_nodes;
@@ -75,6 +76,7 @@ pair<set<int>, set<int> > greedy_graph_search(
         //explore current node in top of the map (shortest distance to querry)
         // int cur_node_id = iter->first;
         vector_node<T> *cur_node = graph->get_node(cur_node_id);
+
 
         //BUILD GET NEIGHBORS FUNCTION!!!!!
         // vector<vector_node *> list_of_neighbors = cur_node->get_neighbors_list();
