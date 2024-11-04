@@ -27,7 +27,7 @@ private:
     map<int, set<int> > neighbours; // Adjacency List
 
 public:
-    graph(const vector<DataVector<T> *> vectors); //initialise graph
+    graph(const vector<vector<T>> &vectors); //initialise graph
     ~graph();
 
     // void add_node(int,list<int>); // add new vector to list of vertices
@@ -50,7 +50,7 @@ public:
 
 //initialize graph
 template<typename T>
-graph<T>::graph(const vector<DataVector<T> *> vectors) {
+graph<T>::graph(const vector<vector<T>> &vectors) {
     for (int i = 0; i < vectors.size(); i++) {
         auto *new_node = new vector_node<T>(i, vectors[i]);
         this->nodes.push_back(new_node);
@@ -60,7 +60,7 @@ graph<T>::graph(const vector<DataVector<T> *> vectors) {
 template<typename T>
 graph<T>::~graph() {
     for (int i = 0; i < this->nodes.size(); i++) {
-        delete(nodes[i]);
+        delete(this->nodes[i]);
     }
 }
 

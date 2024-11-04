@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
+#include <set>
 
 using namespace std;
 
@@ -29,4 +30,15 @@ vector<int> randomPermutation(const int N) {
     srand(time(NULL));
     shuffle(sequence.begin(), sequence.end(), std::mt19937(std::random_device()()));
     return sequence;
+}
+
+float recall(const set<int> &X, const set<int> &T) {
+    set<int> I;
+    set_intersection(
+        X.begin(), X.end(),
+        T.begin(), T.end(),
+        inserter(I, I.begin()));
+    cout << endl;
+    for (const auto &i : I) {cout << i << endl;}
+    return static_cast<float> (I.size()) / static_cast<float> (X.size());
 }

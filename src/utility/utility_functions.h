@@ -10,6 +10,7 @@
 #include <cmath>
 #include <vector>
 #include <algorithm>
+#include <set>
 
 using namespace std;
 
@@ -20,6 +21,8 @@ struct compare_by_second_value
 };
 
 vector<int> randomPermutation(const int N);
+
+float recall(const set<int> &X, const set<int> &T);
 
 // function to calculate euclidean distance between two vertices. Vertices may have many instances
 template<typename T>
@@ -46,21 +49,24 @@ int medoid(const vector<vector<T>> &vectors) {
         return -1;
     }
 
-    // Create vector with pairs <distance, vector_id>.
-    vector<pair<double, int>> distances;
-
-    for (int i = 0; i < vectors.size(); i++) {
+    double min_distance = numeric_limits<double>::max();
+    int medoid_id;
+    int num_vectors = vectors.size();
+    for (int i = 0; i < num_vectors; i++) {
         double distance = 0.0;
         for (int j = 0; j < vectors.size(); j++) {
             // Distance with self is zero.
             distance += euclidean_distance(vectors[i], vectors[j]);
+            if (distance > min_distance) break;
+
         }
-        distances.push_back({distance, i});
+        if (distance < min_distance) {
+            min_distance = distance;
+            medoid_id = i;
+        }
     }
 
-    sort(distances.begin(), distances.end());
-
-    return distances[0].second;
+    return medoid_id;
 }
 
 #endif //UTILITY_FUNCTIONS_H

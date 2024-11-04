@@ -3,7 +3,10 @@ project(k23a_project)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_library(util_library utility_functions.cpp)
+add_library(
+        util_library
+        utility_functions.cpp
+)
 
 target_link_libraries(
         util_library
