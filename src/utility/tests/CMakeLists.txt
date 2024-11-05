@@ -25,6 +25,7 @@ target_link_libraries(
         test_util
         GTest::gtest_main
         util_library
+        input_library
 )
 
 gtest_discover_tests(test_util)

@@ -11,7 +11,8 @@
 #define ERR_MSG_UNKNOWN "ERROR: Unknown option -%c.\n"
 #define ERR_MSG_NOT_PRINT "ERROR: Unknown option character '\\x%x'.\n"
 
-// #define DATA_PATH "/home/gtserve/Code/k23a-project/data/siftsmall"
+#define DATA_PATH "/home/gtserve/Code/k23a-project/data/siftsmall"
+#define MEDOID 8736
 
 typedef struct {
     string vectors_path;
@@ -59,8 +60,6 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // string data_path = DATA_PATH;
-
     auto vectors_start = std::chrono::high_resolution_clock::now();
     vector<vector<float> > base_vectors;
     readVectors<float>(opt.vectors_path + "/siftsmall_base.fvecs", base_vectors);
@@ -78,7 +77,7 @@ int main(int argc, char *argv[]) {
     const int medoid_id = medoid(base_vectors);
     auto medoid_end = std::chrono::high_resolution_clock::now();
     auto medoid_duration = std::chrono::duration_cast<std::chrono::seconds>(medoid_end - medoid_start);
-    cout << "Calculated Medoid! [Time: " << medoid_duration << "]" << endl;
+    cout << "Calculated Medoid: " << medoid_id << " [Time: " << medoid_duration << "]" << endl;
 
     graph<float> G(base_vectors);
 
@@ -105,15 +104,16 @@ int main(int argc, char *argv[]) {
     for (const int &id: L) cout << id << " ";
     cout << endl;
 
-    // cout << "V[" << V.size() << "]: ";
-    // for (const int &id: V) cout << id << " ";
-    // cout << endl;
-    //
-    // cout << "T[" << T.size() << "]: ";
-    // for (const int &id: T) cout << id << " ";
-    // cout << endl;
+    cout << "V[" << V.size() << "]: ";
+    for (const int &id: V) cout << id << " ";
+    cout << endl;
 
-    cout << "Recall: " << recall(L, T) << endl;
+    cout << "T[" << T.size() << "]: ";
+    for (const int &id: T) cout << id << " ";
+    cout << endl;
+
+    float r = recall(L, T);
+    cout << "Recall: " << r << endl;
 
     auto time_end = chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::minutes>(time_end - time_start);

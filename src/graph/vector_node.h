@@ -34,7 +34,7 @@ public:
 
     double getDistance(vector_node<T>* other);
 
-    double getDistance(vector<T> other);
+    double getDistance(vector<T> &other);
 };
 
 template<typename T>
@@ -65,7 +65,7 @@ double vector_node<T>::getDistance(vector_node<T> *other) {
 }
 
 template<typename T>
-double vector_node<T>::getDistance(vector<T> other) {
+double vector_node<T>::getDistance(vector<T> &other) {
     return this->data_vector->getDistance(other);
 }
 
