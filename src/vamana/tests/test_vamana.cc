@@ -21,37 +21,29 @@ TEST(TestGreedySearch, Test1) {
 
 TEST(TestVamana, Test1) {
 
-    vector<DataVector<int> *> data;
+    vector<vector<int>> data;
     for (int i = 0; i < 10; i++) {
         vector<int> v = {i, i, i, i, i};
-        data.push_back(new DataVector<int>(v));
+        data.push_back(v);
     }
 
     graph<int> G(data);
 
-    vamana(&G, &data, 2.0, 5, 4);
+    vamana(&G, data, 2.0, 5, 4);
     G.print_graph();
-
-    for (int i = 0; i < 10; i++) {
-        delete(data[i]);
-    }
 }
 
 TEST(TestVamana_Random, Test1) {
     srand(time(NULL));
 
-    vector<DataVector<int> *> data;
+    vector<vector<int>> data;
     for (int i = 0; i < 10; i++) {
         vector<int> v = {(rand() % 100), (rand() % 100), (rand() % 100), (rand() % 100), (rand() % 100)};
-        data.push_back(new DataVector<int>(v));
+        data.push_back(v);
     }
 
     graph<int> G(data);
 
-    vamana(&G, &data, 1.2, 10, 4);
+    vamana(&G, data, 1.2, 10, 4);
     G.print_graph();
-
-    for (int i = 0; i < 10; i++) {
-        delete(data[i]);
-    }
 }

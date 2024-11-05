@@ -24,7 +24,7 @@ public:
     int getSize() const;
     std::vector<T> getComponents() const;
     double getDistance(DataVector<T>* other) const;
-    double getDistance(vector<T> other) const;
+    double getDistance(vector<T> &other) const;
 };
 
 template <typename T>
@@ -33,22 +33,22 @@ DataVector<T>::DataVector(std::vector<T> &components)
 
 template <typename T>
 int DataVector<T>::getSize() const {
-	return components.size();
+	return this->components.size();
 }
 
 template <typename T>
 std::vector<T> DataVector<T>::getComponents() const {
-    return components;
+    return this->components;
 }
 
 template<typename T>
 double DataVector<T>::getDistance(DataVector<T> *other) const {
-    return euclidean_distance(components, other->getComponents());
+    return euclidean_distance(this->components, other->getComponents());
 }
 
 template<typename T>
-double DataVector<T>::getDistance(vector<T> other) const {
-    return euclidean_distance(components, other);
+double DataVector<T>::getDistance(vector<T> &other) const {
+    return euclidean_distance(this->components, other);
 }
 
 
