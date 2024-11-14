@@ -24,7 +24,7 @@ void writeVectorsToBinaryFile(const string& file_name, const vector<vector<T>>& 
         int dimension = vectors[i].size();
         ofs.write(reinterpret_cast<const char*>(&dimension), sizeof(dimension));
 
-        ofs.write(reinterpret_cast<const char*>(vectors[i].components()), dimension * sizeof(T));
+        ofs.write(reinterpret_cast<const char*>(vectors[i].data()), dimension * sizeof(T));
     }
 
     ofs.close();
@@ -55,7 +55,7 @@ TEST(TestInput, OneVectorFile) {
     writeVectorsToBinaryFile(file_name, vectors_1x1);
 
     // Read binary file.
-    vector<DataVector<int>> data_vectors;
+    vector<vector <int>> data_vectors;
     readVectors<int> (file_name, data_vectors);
 
     // Delete binary file.
@@ -73,7 +73,7 @@ TEST(TestInput, OneThreeVectorFile) {
     writeVectorsToBinaryFile(file_name, vectors_1x3);
 
     // Read binary file.
-    vector<DataVector<int>> data_vectors;
+    vector<vector <int>> data_vectors;
     readVectors<int> (file_name, data_vectors);
 
     // Delete binary file.
@@ -95,7 +95,7 @@ TEST(TestInput, ThreeThreeVectorFile) {
     writeVectorsToBinaryFile(file_name, vectors_3x3);
 
     // Read binary file.
-    vector<DataVector<int>> data_vectors;
+    vector<vector <int>> data_vectors;
     readVectors<int> (file_name, data_vectors);
 
     // Delete binary file.
