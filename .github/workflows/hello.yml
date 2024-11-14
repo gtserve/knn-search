@@ -4,11 +4,35 @@ run-name: ${{github.actor}} Hello World!
 on:
   push:
     branches:
+      # TODO: Before PR, change to 'main' branch
       - workflows
 
 jobs:
-  hello-job:
-    name: Print Hello World!
+  build:
+    name: Build & Run
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Hello World!\n"
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: List Files
+        run: |
+          ls ${{ github.workspace }}
+
+#      - name: Download ANN_SIFT10K dataset
+#        run: |
+#          curl -O "ftp://ftp.irisa.fr/local/texmex/corpus/siftsmall.tar.gz"
+#
+#      - name: Prerequisites
+#        run: |
+#          mkdir build
+#          cd build
+#
+#      - name: Build Main
+#        run: |
+#          cmake ..
+#          cmake --build . --target main
+#
+#      - name: Run Main
+#        run : |
+#          ./main -f /home/gtserve/Code/k23a-project/data/siftsmall -a 1.1 -k 100 -L 100 -R 15
