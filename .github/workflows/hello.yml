@@ -12,11 +12,27 @@ jobs:
     name: Build & Run
     runs-on: ubuntu-latest
     steps:
-      - name: Set up GCC
-        uses: egor-tensin/setup-gcc@v1
-        with:
-          version: latest
-          platform: x64
+      - name: Download Ninja and CMake
+        id: cmake_and_ninja
+        shell: cmake -P {0}
+        run: |
+          set(cmake_version "3.28.3")
+          
+          message(STATUS "Using host CMake version: ${CMAKE_VERSION}")
+          
+          set(cmake_suffix "Linux-x86_64.tar.gz")
+          set(cmake_dir "cmake-${cmake_version}-Linux-x86_64/bin")
+          
+          set(cmake_url "https://github.com/Kitware/CMake/releases/download/v${cmake_version}/cmake-${cmake_version}-${cmake_suffix}")
+          file(DOWNLOAD "${cmake_url}" ./cmake.zip SHOW_PROGRESS)
+          execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvf ./cmake.zip)
+          
+          # Save the path for other steps
+          file(TO_CMAKE_PATH "$ENV{GITHUB_WORKSPACE}/${cmake_dir}" cmake_dir)
+          message("::set-output name=cmake_dir::${cmake_dir}")
+          
+          COMMAND chmod +x ninja
+          COMMAND chmod +x ${cmake_dir}/cmake
 
       - name: Checkout repository
         uses: actions/checkout@v4
