@@ -55,7 +55,7 @@ TEST(TestInput, OneVectorFile) {
     writeVectorsToBinaryFile<int>(file_name, vectors_1x1);
 
     // Read binary file.
-    vector<vector<int>> data_vectors;
+    vector<vector <int>> data_vectors;
     readVectors<int> (file_name, data_vectors);
 
     // Delete binary file.
@@ -73,7 +73,7 @@ TEST(TestInput, OneThreeVectorFile) {
     writeVectorsToBinaryFile<int>(file_name, vectors_1x3);
 
     // Read binary file.
-    vector<vector<int>> data_vectors;
+    vector<vector <int>> data_vectors;
     readVectors<int> (file_name, data_vectors);
 
     // Delete binary file.
@@ -95,7 +95,7 @@ TEST(TestInput, ThreeThreeVectorFile) {
     writeVectorsToBinaryFile<int>(file_name, vectors_3x3);
 
     // Read binary file.
-    vector<vector<int>> data_vectors;
+    vector<vector <int>> data_vectors;
     readVectors<int> (file_name, data_vectors);
 
     // Delete binary file.
