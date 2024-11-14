@@ -26,15 +26,15 @@ float recall(const set<int> &X, const set<int> &T);
 
 // function to calculate euclidean distance between two vertices. Vertices may have many instances
 template<typename T>
-double euclidean_distance(const vector<T> parent_instances, const vector<T> new_instances) {
+long double euclidean_distance(const vector<T> &parent_instances, const vector<T> &new_instances) {
     if (parent_instances.size() != new_instances.size()) {
         cerr << "[ERROR]: Attempt to calculate distance between vectors of different size." << endl;
         return -0.1;
     }
 
-    double d = 0;
+    long double d = 0;
     for (int i = 0; i < parent_instances.size(); ++i) {
-        d += pow((parent_instances[i]) - (new_instances[i]), 2);
+        d += static_cast<long double> (pow((abs(parent_instances[i]) - (new_instances[i])), 2));
     }
 
     return sqrt(d);
@@ -50,7 +50,7 @@ int medoid(const vector<vector<T>> &vectors) {
     }
 
     double min_distance = numeric_limits<double>::max();
-    int medoid_id;
+    int medoid_id = 0;
     int num_vectors = vectors.size();
     for (int i = 0; i < num_vectors; i++) {
         double distance = 0.0;

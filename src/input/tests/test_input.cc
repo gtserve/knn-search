@@ -34,7 +34,7 @@ TEST(TestInput, EmptyVectorFile) {
     const vector<vector<int>> vectors_empty;
     const char* file_name = "./vector_empty.bin";
 
-    writeVectorsToBinaryFile(file_name, vectors_empty);
+    writeVectorsToBinaryFile<int>(file_name, vectors_empty);
 
     // Read binary file.
     vector<vector<int>> vectors;
@@ -52,7 +52,7 @@ TEST(TestInput, OneVectorFile) {
     const vector<vector<int>> vectors_1x1 = {{0}};
     const char* file_name = "./vector_1x1.bin";
 
-    writeVectorsToBinaryFile(file_name, vectors_1x1);
+    writeVectorsToBinaryFile<int>(file_name, vectors_1x1);
 
     // Read binary file.
     vector<vector <int>> data_vectors;
@@ -70,7 +70,7 @@ TEST(TestInput, OneThreeVectorFile) {
     const vector<vector<int>> vectors_1x3 = {{1, 2, 3}};
     const char* file_name = "./vectors_1x3.bin";
 
-    writeVectorsToBinaryFile(file_name, vectors_1x3);
+    writeVectorsToBinaryFile<int>(file_name, vectors_1x3);
 
     // Read binary file.
     vector<vector <int>> data_vectors;
@@ -92,7 +92,7 @@ TEST(TestInput, ThreeThreeVectorFile) {
     };
     const char* file_name = "./vectors_3x3.bin";
 
-    writeVectorsToBinaryFile(file_name, vectors_3x3);
+    writeVectorsToBinaryFile<int>(file_name, vectors_3x3);
 
     // Read binary file.
     vector<vector <int>> data_vectors;
