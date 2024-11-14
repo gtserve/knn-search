@@ -1,0 +1,26 @@
+name: "main.yml"
+run-name: "[#${{github.run_number}}] Run Main"
+
+on: [workflow_dispatch]   # Manual Trigger
+
+jobs:
+  build:
+    name: Build & Run
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download ANN_SIFT10K dataset
+        run: |
+          curl -O "ftp://ftp.irisa.fr/local/texmex/corpus/siftsmall.tar.gz"
+          tar -xzf siftsmall.tar.gz
+
+      - name: Build Main
+        run: |
+          cmake -S . -B ./build
+          cmake --build ./build --target main
+
+      - name: Run Main
+        run : |
+          ./build/main -f ./siftsmall -a 1.1 -k 100 -L 100 -R 15
