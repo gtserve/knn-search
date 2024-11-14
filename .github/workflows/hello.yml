@@ -1,0 +1,14 @@
+name: hello.yml
+run-name: ${{github.actor}} Hello World!
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  hello-job:
+    name: Print Hello World!
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Hello World!\n"
