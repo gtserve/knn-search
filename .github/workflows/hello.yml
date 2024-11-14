@@ -12,27 +12,20 @@ jobs:
     name: Build & Run
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: List Files
+      - name: Download ANN_SIFT10K dataset
         run: |
-          ls ${{ github.workspace }}
+          curl -O "ftp://ftp.irisa.fr/local/texmex/corpus/siftsmall.tar.gz"
+          tar -xzf siftsmall.tar.gz
 
-#      - name: Download ANN_SIFT10K dataset
-#        run: |
-#          curl -O "ftp://ftp.irisa.fr/local/texmex/corpus/siftsmall.tar.gz"
-#
-#      - name: Prerequisites
-#        run: |
-#          mkdir build
-#          cd build
-#
-#      - name: Build Main
-#        run: |
-#          cmake ..
-#          cmake --build . --target main
-#
-#      - name: Run Main
-#        run : |
-#          ./main -f /home/gtserve/Code/k23a-project/data/siftsmall -a 1.1 -k 100 -L 100 -R 15
+      - name: Build Main
+        run: |
+          mkdir build
+          cmake .
+          cmake --build ./build --target main
+
+      - name: Run Main
+        run : |
+          ./build/main -f ./siftsmall -a 1.1 -k 100 -L 100 -R 15
