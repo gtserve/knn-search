@@ -4,7 +4,7 @@ run-name: ${{github.actor}} Hello World!
 on:
   push:
     branches:
-      - main
+      - workflows
 
 jobs:
   hello-job:
