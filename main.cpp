@@ -71,13 +71,13 @@ int main(int argc, char *argv[]) {
     readVectors<int>(opt.vectors_path + "/siftsmall_groundtruth.ivecs", gt_vectors);
     auto vectors_end = std::chrono::high_resolution_clock::now();
     auto vectors_duration = std::chrono::duration_cast<std::chrono::milliseconds>(vectors_end - vectors_start);
-    // cout << "Read vectors! [Time: " << vectors_duration << "]" << endl;
+    cout << "Read vectors! [Time: " << vectors_duration.count() << "ms ]" << endl;
 
     auto medoid_start = std::chrono::high_resolution_clock::now();
     const int medoid_id = medoid(base_vectors);
     auto medoid_end = std::chrono::high_resolution_clock::now();
     auto medoid_duration = std::chrono::duration_cast<std::chrono::seconds>(medoid_end - medoid_start);
-    // cout << "Calculated Medoid: " << medoid_id << " [Time: " << medoid_duration << "]" << endl;
+    cout << "Calculated Medoid: " << medoid_id << " [Time: " << medoid_duration.count() << "s ]" << endl;
 
     graph<float> G(base_vectors);
 
@@ -85,14 +85,14 @@ int main(int argc, char *argv[]) {
     vamana(&G, base_vectors, medoid_id, opt.a, opt.L, opt.R);
     auto vamana_end = std::chrono::high_resolution_clock::now();
     auto vamana_duration = std::chrono::duration_cast<std::chrono::seconds>(vamana_end - vamana_start);
-    // cout << "Run Vamana! [Time: " << vamana_duration << "]" << endl;
+    cout << "Run Vamana! [Time: " << vamana_duration.count() << "s ]" << endl;
 
     auto greedy_start = std::chrono::high_resolution_clock::now();
     pair<set<int>, set<int> > greedy_result;
     greedy_result = greedy_graph_search(&G, medoid_id, 0, query_vectors[0], opt.k, opt.L, false);
     auto greedy_end = std::chrono::high_resolution_clock::now();
     auto greedy_duration = std::chrono::duration_cast<std::chrono::milliseconds>(greedy_end - greedy_start);
-    // cout << "Run Greedy! [Time: " << greedy_duration << "]" << endl;
+    cout << "Run Greedy! [Time: " << greedy_duration.count() << "ms ]" << endl;
 
     set<int> L = greedy_result.first;
     set<int> V = greedy_result.second;
@@ -117,7 +117,7 @@ int main(int argc, char *argv[]) {
 
     auto time_end = chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::minutes>(time_end - time_start);
-    // cout << "[Total Time: " << duration << "]" << endl;
+    cout << "[Total Time: " << duration.count() << "m ]" << endl;
 
     return 0;
 }
