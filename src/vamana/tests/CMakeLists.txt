@@ -3,7 +3,7 @@ project(k23a_project)
 
 add_executable(
         test_vamana
-        test_vamana.cc
+        test_greedy_search.cc
 )
 
 target_link_libraries(
@@ -12,3 +12,5 @@ target_link_libraries(
         graph_library
         vamana_library
 )
+
+add_test(NAME TestVamana COMMAND test_vamana)

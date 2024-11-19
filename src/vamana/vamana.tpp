@@ -6,7 +6,7 @@
 
 #include <graph.h>
 #include <utility_functions.h>
-#include <data_vector.h>
+
 
 template<typename T>
 pair<set<int>, set<int> > greedy_graph_search(
@@ -17,7 +17,6 @@ pair<set<int>, set<int> > greedy_graph_search(
     const int K,
     const int L,
     const bool vamana) {
-
     set<int> visited_ids;
     set<int> neighbors_ids;
 
