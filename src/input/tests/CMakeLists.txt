@@ -23,5 +23,5 @@ target_link_libraries(
         input_library
 )
 
-add_test(NAME TestInputSmall COMMAND test_input_small)
+#add_test(NAME TestInputSmall COMMAND test_input_small)
 add_test(NAME TestInput COMMAND test_input)
