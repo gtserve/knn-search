@@ -12,7 +12,7 @@ TEST(TestGreedySearch, Test1) {
 
     graph<int> G(data);
     G.generate_random_graph(3);
-    G.print_graph();
+    G.print();
 
     pair<set<int>, set<int>> temp_pair = greedy_graph_search(&G, 0, 2, data[2], 2, 10, false);
     for (const int i: temp_pair.first) cout << i << endl;
@@ -28,7 +28,7 @@ TEST(TestVamana, Test1) {
     graph<int> G(data);
     const int medoid_id = medoid(data);
     vamana(&G, data, medoid_id, 2.0, 5, 4);
-    G.print_graph();
+    G.print();
 }
 
 TEST(TestVamana_Random, Test2) {
@@ -42,5 +42,5 @@ TEST(TestVamana_Random, Test2) {
     const int medoid_id = medoid(data);
 
     vamana(&G, data, medoid_id, 1.2, 10, 4);
-    G.print_graph();
+    G.print();
 }

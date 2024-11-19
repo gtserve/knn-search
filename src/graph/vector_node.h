@@ -5,17 +5,9 @@
 #ifndef VECTOR_NODE_H
 #define VECTOR_NODE_H
 
-
-#include <list>
 #include <vector>
-#include <set>
 #include <data_vector.h>
 
-#include "neighbor.h"
-
-#include "../utility/utility_functions.h"
-
-using namespace std;
 
 template<typename T>
 class vector_node {
