@@ -18,7 +18,7 @@ TEST(TestUtil, Recall) {
     auto time_end = std::chrono::system_clock::now();
     // chrono::duration<double> elapsed_seconds = time_end - time_start;
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(time_end - time_start);
-    cout << duration << " microseconds" << endl;
+    cout << duration.count() << " ms" << endl;
 
     EXPECT_NEAR(recall(X, T), 0.6, 0.001);
 }
