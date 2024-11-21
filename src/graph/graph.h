@@ -14,6 +14,7 @@
 
 #include "vector_node.h"
 #include <data_vector.h>
+#include <unordered_set>
 
 
 #define NEIGHBOR 1000
@@ -24,10 +25,10 @@ template<typename T>
 class graph {
 private:
     vector<vector_node<T> *> nodes; //vector that stores alla vertices
-    map<int, set<int> > neighbours; // Adjacency List
+    map<int, unordered_set<int> > neighbours; // Adjacency List
 
 public:
-    graph(const vector<vector<T>> &vectors); //initialise graph
+    graph(const vector<vector<T>> &vectors,const int R); //initialise graph
     ~graph();
 
     // void add_node(int,list<int>); // add new vector to list of vertices
@@ -39,7 +40,7 @@ public:
     int get_vertices(); //return number of vertices in graph
     vector_node<T> *get_node(int);
 
-    set<int> getNodeNeighbours(int id);
+    unordered_set<int> getNodeNeighbours(int id);
 
     void addEdgeDirected(int u, int v);
 
@@ -50,10 +51,11 @@ public:
 
 //initialize graph
 template<typename T>
-graph<T>::graph(const vector<vector<T>> &vectors) {
+graph<T>::graph(const vector<vector<T>> &vectors,const int R) {
     for (int i = 0; i < vectors.size(); i++) {
         auto *new_node = new vector_node<T>(i, vectors[i]);
         this->nodes.push_back(new_node);
+        neighbours[i].reserve(R);
     }
 }
 
@@ -106,7 +108,7 @@ vector_node<T> *graph<T>::get_node(int id) {
 }
 
 template <typename T>
-set<int> graph<T>::getNodeNeighbours(const int id) {
+unordered_set<int> graph<T>::getNodeNeighbours(const int id) {
     return this->neighbours[id];
 }
 

@@ -43,12 +43,12 @@ std::vector<T> DataVector<T>::getComponents() const {
 
 template<typename T>
 double DataVector<T>::getDistance(DataVector<T> *other) const {
-    return euclidean_distance(this->components, other->getComponents());
+    return squared_euclidean_distance(this->components, other->getComponents());
 }
 
 template<typename T>
 double DataVector<T>::getDistance(vector<T> &other) const {
-    return euclidean_distance(this->components, other);
+    return squared_euclidean_distance(this->components, other);
 }
 
 

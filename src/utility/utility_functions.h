@@ -11,6 +11,7 @@
 #include <vector>
 #include <algorithm>
 #include <set>
+#include <unordered_set>
 
 using namespace std;
 
@@ -38,6 +39,21 @@ long double euclidean_distance(const vector<T> &parent_instances, const vector<T
     }
 
     return sqrt(d);
+}
+
+template<typename T>
+long double squared_euclidean_distance(const vector<T> &parent_instances, const vector<T> &new_instances) {
+    if (parent_instances.size() != new_instances.size()) {
+        cerr << "[ERROR]: Attempt to calculate distance between vectors of different size." << endl;
+        return -0.1;
+    }
+
+    long double d = 0;
+    for (int i = 0; i < parent_instances.size(); ++i) {
+        d += static_cast<long double> (pow((abs(parent_instances[i]) - (new_instances[i])), 2));
+    }
+
+    return d;
 }
 
 template <typename T>
