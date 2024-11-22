@@ -1,0 +1,30 @@
+name: "tests.yml"
+run-name: "[#${{github.run_number}}] Run All Tests"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download ANN_SIFT10K dataset
+        run: |
+          curl -O "ftp://ftp.irisa.fr/local/texmex/corpus/siftsmall.tar.gz"
+          tar -xzf siftsmall.tar.gz
+
+      - name: Build project
+        run: |
+          cmake -S . -B ./build
+          cmake --build ./build
+
+      - name: Run all tests
+        run : |
+          ctest
