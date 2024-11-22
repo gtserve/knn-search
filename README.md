@@ -1,18 +1,26 @@
 # k23a-project
-Project για το μάθημα [K23A] Ανάπτυξη Λογισμικού για Πληροφοριακά Συστήματα.
+Project for *'[K23A] Ανάπτυξη Λογισμικού για Πληροφοριακά Συστήματα'*
 
-## Ομάδα
+## Team
 
-| Όνομα              |     Α.Μ.      | Email                |
+| Name               |     Α.Μ.      | Email                |
 |:-------------------|:-------------:|:---------------------|
 | Γεώργιος Τσερβένης | 1115201500164 | sdi1500164@di.uoa.gr |
 | Νικόλαος Τσόλκας   | 1115201600184 | sdi1600184@di.uoa.gr |
 
-## Πίνακας Περιεχομένων
-- [Installation](#installation)
-- [Usage](#usage)
+## Table of Contents
 
-# 1ο Παραδοτέο
+- [1st Part](#1st-part)
+  - [Download Datasets](#download-test-datasets)
+  - [Build](#build)
+  - [Run Main](#run-main)
+  - [Run Tests](#run-tests)
+
+- [2nd Part](#2nd-part)
+
+- [3rd Part](#3rd-part)
+
+# 1st Part
 
 ## Download Test Datasets
 To run the `main` function of this part of the project you'll need to download the **siftsmall** dataset from http://corpus-texmex.irisa.fr/
@@ -28,6 +36,7 @@ To run the `main` function of this part of the project you'll need to download t
     ```
 
 ## Build
+
 - After cloning the repo `cd` into its directory.
 
 - Create a `build` directory:
@@ -35,14 +44,24 @@ To run the `main` function of this part of the project you'll need to download t
     $ mkdir build
     $ cd build
     ```
-  
-- Build project with `cmake`:
-    ```bash
-    $ cmake ..
-    $ cmake --build . --target main
-    ```
+- Generate project build system:
 
-## Run
+  ```bash
+  $ cmake ..
+  ```
+
+- Build project:
+   ```bash
+    $ cmake --build . 
+   ``` 
+
+Alternatively you can build a specific target / executable such as `main` like so:
+
+  ```bash
+  $ cmake --build . --target main
+  ```
+
+## Run Main
 The `main` function of this part of the project has to be run with the following flags/arguments:
 
 - `-f`: `<path_to_dataset_directory>`
@@ -69,7 +88,7 @@ The `main` function of this part of the project has to be run with the following
     - type: Integer
     - default: `10`
 
-An example of `main` run could be:
+An example of a run `main` is:
 ```bash
 ./main -f "./blah/blah/.../data/siftsmall" -a 1.1 -k 100 -L 100 -R 15
 ```
@@ -84,3 +103,43 @@ Recall: 0.96
 [Total Time: 17min]
 ```
 *(Here the calculation of the medoid was ignored, which have added ~6min to total runtime)*
+
+
+## Run Tests
+
+After you have built the whole project, you can run all tests by running in the `build` directory:
+```bash
+  $ ctest
+```
+The output of the above will be something like this:
+
+```bash
+  Test project /home/gtserve/Code/k23a-project/build
+      Start 1: TestInput
+  1/5 Test #1: TestInput ........................   Passed    0.00 sec
+      Start 2: TestDataVector
+  2/5 Test #2: TestDataVector ...................   Passed    0.00 sec
+      Start 3: TestUtil
+  3/5 Test #3: TestUtil .........................   Passed    0.00 sec
+      Start 4: TestGraph
+  4/5 Test #4: TestGraph ........................   Passed    0.00 sec
+      Start 5: TestVamana
+  5/5 Test #5: TestVamana .......................   Passed    0.00 sec
+```
+
+If you want a more analytical output you can run:
+```bash
+  $ ctest --verbose
+```
+
+If you want to run a specific test:
+```bash
+  $ ctest -R <TestName>
+```
+
+# 2nd Part
+
+
+# 3rd Part
+
+
