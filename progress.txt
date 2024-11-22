@@ -55,3 +55,45 @@ r 20
 
 vamana took: 38min
 racall: 0.99
+
+21/11 8:50pm
+
+Focused on greedy search
+
+1.change sorting function(sort() -> nth_element())
+2.changed euclidean distance(removed all cmath functions)
+
+Results with medoid:
+
+1/
+a 1.2
+k 100
+l 120
+r 60
+
+medoid took : 123s
+vamana took : 504s -> 8.2 min
+
+recall: 1
+
+2/
+a 1.2
+k 10
+l 12
+r 6
+
+medoid took : 125s
+vamana took : 17s
+
+recall: 1
+
+3/
+a 1.2
+k 50
+l 50
+r 15
+
+medoid took : 125s
+vamana took : 152s
+
+recall: 1

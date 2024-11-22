@@ -73,12 +73,11 @@ int main(int argc, char *argv[]) {
     auto vectors_duration = std::chrono::duration_cast<std::chrono::milliseconds>(vectors_end - vectors_start);
     cout << "Read vectors! [Time: " << vectors_duration.count() << "ms ]" << endl;
 
-    /*auto medoid_start = std::chrono::high_resolution_clock::now();
+    auto medoid_start = std::chrono::high_resolution_clock::now();
     const int medoid_id = medoid(base_vectors);
     auto medoid_end = std::chrono::high_resolution_clock::now();
     auto medoid_duration = std::chrono::duration_cast<std::chrono::seconds>(medoid_end - medoid_start);
     cout << "Calculated Medoid: " << medoid_id << " [Time: " << medoid_duration.count() << "s ]" << endl;
-    */
 
     graph<float> G(base_vectors,opt.R);
 
@@ -90,7 +89,7 @@ int main(int argc, char *argv[]) {
 
     auto greedy_start = std::chrono::high_resolution_clock::now();
     pair<set<int>, unordered_set<int> > greedy_result;
-    greedy_result = greedy_graph_search(&G, MEDOID, 2, query_vectors[2], opt.k, opt.L, false);
+    greedy_result = greedy_graph_search(&G, MEDOID, 0, query_vectors[0], opt.k, opt.L, false);
     auto greedy_end = std::chrono::high_resolution_clock::now();
     auto greedy_duration = std::chrono::duration_cast<std::chrono::milliseconds>(greedy_end - greedy_start);
     cout << "Run Greedy! [Time: " << greedy_duration.count() << "ms ]" << endl;
@@ -99,7 +98,7 @@ int main(int argc, char *argv[]) {
     unordered_set<int> V = greedy_result.second;
 
     set<int> T;
-    for (const int &i: gt_vectors[2]) T.insert(i);
+    for (const int &i: gt_vectors[0]) T.insert(i);
 
     cout << "k-nearest neighbours [" << L.size() << "]: ";
     for (const int &id: L) cout << id << " ";

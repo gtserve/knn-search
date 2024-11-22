@@ -15,6 +15,7 @@
 #include "vector_node.h"
 #include <data_vector.h>
 #include <unordered_set>
+#include <unordered_map>
 
 
 #define NEIGHBOR 1000
@@ -26,6 +27,9 @@ class graph {
 private:
     vector<vector_node<T> *> nodes; //vector that stores alla vertices
     map<int, unordered_set<int> > neighbours; // Adjacency List
+
+    //unordered map for storing distances TEST TEST
+    unordered_map<pair<int, int>, long double,PairHash> distances_map;
 
 public:
     graph(const vector<vector<T>> &vectors,const int R); //initialise graph
@@ -47,6 +51,12 @@ public:
     void deleteEdgeDirected(int u, int v);
 
     void clearNeighbours(int id);
+
+
+    //testing new unordered map for storing distances
+    long double getDistance(int x, int y);
+
+    void addDistance(int x, int y, long double distance);
 };
 
 //initialize graph
@@ -138,6 +148,27 @@ void graph<T>::clearNeighbours(const int id) {
     this->neighbours[id].clear();
 }
 
+
+
+template<typename T>
+long double graph<T>::getDistance(int x, int y)
+{
+    //auto it = this->distances_map.find({min(x,y),max(x,y)});
+     if (this->distances_map.find({min(x,y),max(x,y)}) != this->distances_map.end())
+     {
+        return this->distances_map[{min(x,y),max(x,y)}];
+     }
+    return 0.0;
+}
+
+template<typename T>
+void graph<T>::addDistance(int x, int y, long double distance)
+{
+    this->distances_map[{min(x,y),max(x,y)}]=distance;
+}
+
+
+
 // //add new vertice in vertice vector
 // graph add_vector(int, list<int>);
 //
@@ -152,6 +183,5 @@ void graph<T>::clearNeighbours(const int id) {
 // void robust_prune(graph *, vector_node *node, vector<vector_node *> candidates, int a, int R);
 //
 // void print_graph(graph);
-
 
 #endif //GRAPH_VECTOR_H
