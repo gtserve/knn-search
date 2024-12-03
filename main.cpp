@@ -62,13 +62,13 @@ int main(int argc, char *argv[]) {
 
     auto vectors_start = std::chrono::high_resolution_clock::now();
     vector<vector<float> > base_vectors;
-    readVectors<float>(opt.vectors_path + "/siftsmall_base.fvecs", base_vectors);
+    readTexmexVectors<float>(opt.vectors_path + "/siftsmall_base.fvecs", base_vectors);
 
     vector<vector<float> > query_vectors;
-    readVectors<float>(opt.vectors_path + "/siftsmall_query.fvecs", query_vectors);
+    readTexmexVectors<float>(opt.vectors_path + "/siftsmall_query.fvecs", query_vectors);
 
     vector<vector<int> > gt_vectors;
-    readVectors<int>(opt.vectors_path + "/siftsmall_groundtruth.ivecs", gt_vectors);
+    readTexmexVectors<int>(opt.vectors_path + "/siftsmall_groundtruth.ivecs", gt_vectors);
     auto vectors_end = std::chrono::high_resolution_clock::now();
     auto vectors_duration = std::chrono::duration_cast<std::chrono::milliseconds>(vectors_end - vectors_start);
     cout << "Read vectors! [Time: " << vectors_duration.count() << "ms ]" << endl;
