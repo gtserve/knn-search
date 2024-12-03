@@ -15,8 +15,8 @@
 #include <fstream>
 #include <vector>
 
-#include <data_vector.h>
 
+void readSigmodVectors(const std::string &file_path, int num_attributes, int vec_dimension, bool queries, std::vector<std::vector<float> > &data);
 
 template <typename T>
 void readVectors(const std::string &file_name, std::vector<std::vector<T>>& vectors) {
