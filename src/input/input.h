@@ -16,7 +16,14 @@
 #include <vector>
 
 
-void readSigmodVectors(const std::string &file_path, int num_attributes, int vec_dimension, bool queries, std::vector<std::vector<float> > &data);
+void readSigmodVectors(
+    const std::string &file_path,
+    int num_attributes,
+    int vec_dimension,
+    bool queries,
+    std::vector<std::vector<float> > &data,
+    std::vector<std::vector<float> > &filters
+);
 
 template<typename T>
 void readTexmexVectors(const std::string &file_name, std::vector<std::vector<T> > &vectors) {

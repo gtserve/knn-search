@@ -16,7 +16,9 @@ private:
     DataVector<T> *data_vector;
 
 public:
-    vector_node(const int node_id, vector<T> components); //create node
+    vector_node(const int node_id, const vector<T> &components); //create node
+
+    vector_node(const int node_id, const vector<T> &components, const vector<float> &filters); //create node
 
     ~vector_node();
 
@@ -32,9 +34,15 @@ public:
 };
 
 template<typename T>
-vector_node<T>::vector_node(const int node_id, vector<T> components) {
+vector_node<T>::vector_node(const int node_id, const vector<T> &components) {
     this->node_id = node_id;
     this->data_vector = new DataVector<T>(components);
+}
+
+template<typename T>
+vector_node<T>::vector_node(const int node_id, const vector<T> &components, const vector<float> &filters) {
+    this->node_id = node_id;
+    this->data_vector = new DataVector<T>(components, filters);
 }
 
 template<typename T>

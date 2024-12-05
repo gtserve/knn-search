@@ -19,18 +19,18 @@
 template<typename T>
 class DataVector {
     std::vector<T> components;
-    std::set<int> filters;
+    std::set<float> filters;
 
 public:
-    explicit DataVector(std::vector<T> &components);
+    explicit DataVector(const std::vector<T> &components);
 
-    DataVector(const std::vector<T> &components, const std::set<int> &filters);
+    explicit DataVector(const std::vector<T> &components, const std::vector<float> &filters);
 
     int getSize() const;
 
     std::vector<T> getComponents() const;
 
-    std::set<int> getFilters() const;
+    std::set<float> getFilters() const;
 
     double getDistance(DataVector<T> *other) const;
 
@@ -40,13 +40,15 @@ public:
 };
 
 template<typename T>
-DataVector<T>::DataVector(std::vector<T> &components)
+DataVector<T>::DataVector(const std::vector<T> &components)
     : components(components) {
 }
 
 template<typename T>
-DataVector<T>::DataVector(const std::vector<T> &components, const std::set<int> &filters)
-    : components(components), filters(filters) {
+DataVector<T>::DataVector(const std::vector<T> &components, const std::vector<float> &filters)
+    : components(components) {
+    for (const auto &filter: filters)
+        this->filters.insert(filter);
 }
 
 template<typename T>
@@ -60,7 +62,7 @@ std::vector<T> DataVector<T>::getComponents() const {
 }
 
 template<typename T>
-std::set<int> DataVector<T>::getFilters() const {
+std::set<float> DataVector<T>::getFilters() const {
     return this->filters;
 }
 
