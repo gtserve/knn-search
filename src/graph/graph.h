@@ -63,9 +63,17 @@ public:
 
 //initialize graph
 template<typename T>
+graph<T>::graph(const vector<vector<T> > &vectors)
+{
 
-//graph<T>::graph(const vector<vector<T> > &vectors)
+    for (int i = 0; i < vectors.size(); i++) {
+        auto *new_node = new vector_node<T>(i, vectors[i]);
+        this->nodes.push_back(new_node);
+        //neighbours[i].reserve(R);
+    }
+}
 
+template<typename T>
 graph<T>::graph(const vector<vector<T>> &vectors,const int R)
  {
 
