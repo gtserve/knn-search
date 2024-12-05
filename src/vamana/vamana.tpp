@@ -21,99 +21,6 @@ pair<set<int>, unordered_set<int> > greedy_graph_search(
     const int L,
     const bool vamana) {
 
-    unordered_set<int> visited_ids;
-    set<int> neighbors_ids;
-
-    neighbors_ids.insert(starting);
-
-    //cout << "here 1" << endl;
-    unordered_set<int> diff;
-    for(const int p : neighbors_ids)
-    {
-        if(visited_ids.find(p) == visited_ids.end())
-        {
-            diff.insert(p);
-        }
-    }
-    /*set_difference(
-        neighbors_ids.begin(), neighbors_ids.end(),
-        visited_ids.begin(), visited_ids.end(),
-        inserter(diff, diff.begin())
-    );*/
-
-    //cout << "here 2 " << diff.size() << endl;
-
-    while (!diff.empty()) {
-        int cur_node_id;
-        double min_distance = 1e10;
-        for (const int p: diff) {
-            vector_node<T> *node_p = graph->get_node(p);
-            double cur_distance = node_p->getDistance(query_vector);
-            if (cur_distance < min_distance) {
-                min_distance = cur_distance;
-                cur_node_id = p;
-            }
-        }
-
-        for (const int id: graph->getNodeNeighbours(cur_node_id)) neighbors_ids.insert(id);
-        visited_ids.insert(cur_node_id);
-
-        if (neighbors_ids.size() > L) {
-            vector<pair<double, int> > distances;
-            for (const int id: neighbors_ids) {
-                vector_node<T> *neighbour_node = graph->get_node(id);
-                double distance = neighbour_node->getDistance(query_vector);
-                distances.push_back({distance, id});
-            }
-            sort(distances.begin(), distances.end());
-
-            for (int i = distances.size() - 1; i >= L; i--)
-                neighbors_ids.erase(distances[i].second);
-        }
-
-        //cout << "here 1" << endl;
-        diff.clear();
-        for(const int p : neighbors_ids)
-        {
-            if(visited_ids.find(p) == visited_ids.end())
-            {
-                diff.insert(p);
-            }
-        }
-        /*set_difference(
-            neighbors_ids.begin(), neighbors_ids.end(),
-            visited_ids.begin(), visited_ids.end(),
-            inserter(diff, diff.begin())
-        );*/
-        //cout << "here 2 " << diff.size() << endl;
-    }
-
-    if (neighbors_ids.size() > K) {
-        vector<pair<double, int> > distances;
-        for (const int id: neighbors_ids) {
-            vector_node<T> *neighbour_node = graph->get_node(id);
-            double distance = neighbour_node->getDistance(query_vector);
-            distances.push_back({distance, id});
-        }
-        sort(distances.begin(), distances.end());
-
-        for (int i = distances.size() - 1; i >= K; i--)
-            neighbors_ids.erase(distances[i].second);
-    }
-
-    return {neighbors_ids, visited_ids};
-}
-
-template<typename T>
-pair<set<int>, unordered_set<int> > greedy_graph_search_revision(
-    graph<T> *graph,
-    const int starting,
-    const int query_id,
-    vector<T> query_vector,
-    const int K,
-    const int L,
-    const bool vamana) {
-
 
     //vector that holds distances from nodes to other nodes
 
@@ -219,43 +126,8 @@ pair<set<int>, unordered_set<int> > greedy_graph_search_revision(
     return {neighbors_ids, visited_ids};
 }
 
-
 template<typename T>
 void robustPrune(graph<T> *G, const int p, unordered_set<int> &V, const float a, const int R) {
-    vector_node<T> *Np = G->get_node(p);
-
-    for (const int n: G->getNodeNeighbours(p)) V.insert(n);
-    V.erase(p);
-    G->clearNeighbours(p);
-
-    while (!V.empty()) {
-        int p_best;
-        double min_distance = 1e10;
-        for (const int c: V) {
-            vector_node<T> *Nc = G->get_node(c);
-            double candidate_distance = Np->getDistance(Nc);
-            if (candidate_distance < min_distance) {
-                min_distance = candidate_distance;
-                p_best = c;
-            }
-        }
-
-        vector_node<T> *Np_best = G->get_node(p_best);
-        G->addEdgeDirected(p, p_best);
-
-        if (G->getNodeNeighbours(p).size() == R) break;
-
-        //set<int> V_copy = V;
-        for (const int c: V) {
-            vector_node<T> *Nc = G->get_node(c);
-            if (a * Np_best->getDistance(Nc) <= Np->getDistance(Nc))
-                V.erase(c);
-        }
-    }
-}
-
-template<typename T>
-void robustPrune_revision(graph<T> *G, const int p, unordered_set<int> &V, const float a, const int R) {
     vector_node<T> *Np = G->get_node(p);
 
     for (const int n: G->getNodeNeighbours(p)) V.insert(n);

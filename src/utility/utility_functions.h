@@ -53,12 +53,13 @@ long double euclidean_distance(const vector<T> &parent_instances, const vector<T
 template<typename T>
 long double squared_euclidean_distance(const vector<T> &parent_instances, const vector<T> &new_instances) {
 
-        // Ensure the vectors are the same size (debug-only; remove in production for performance).
-        //assert(parent_instances.size() == new_instances.size());
+        if (parent_instances.size() != new_instances.size()) {
+            cerr << "[ERROR]: Attempt to calculate distance between vectors of different size." << endl;
+            return -0.1;
+        }
 
         long double d = 0.0;
 
-        // Loop through the vector and compute squared differences directly.
         for (size_t i = 0; i < parent_instances.size(); ++i) {
             long double diff = static_cast<long double>(parent_instances[i] - new_instances[i]);
             d += diff * diff;
@@ -67,18 +68,6 @@ long double squared_euclidean_distance(const vector<T> &parent_instances, const 
         return d;
     }
 
-    /*if (parent_instances.size() != new_instances.size()) {
-        cerr << "[ERROR]: Attempt to calculate distance between vectors of different size." << endl;
-        return -0.1;
-    }
-
-    long double d = 0;
-    for (int i = 0; i < parent_instances.size(); ++i) {
-        d += static_cast<long double> (pow((abs(parent_instances[i]) - (new_instances[i])), 2));
-    }
-
-    return d;
-}*/
 
 template <typename T>
 int medoid(const vector<vector<T>> &vectors) {
@@ -89,38 +78,6 @@ int medoid(const vector<vector<T>> &vectors) {
         return -1;
     }
 
-    //unordered_map<std::pair<int, int>, long double, PairHash> distance_cache;
-
-    /*long double min_distance = numeric_limits<long double>::max();
-    int medoid_id = -1;
-
-    for (int i = 0; i < vectors.size(); i++) {
-        long double total_distance = 0.0;
-
-        for (int j = 0; j < vectors.size(); j++) {
-            if (i == j) continue;
-
-            std::pair<int, int> key = (i < j) ? std::make_pair(i, j) : std::make_pair(j, i);
-
-            // Check if the distance is already cached
-            if (distance_cache.find(key) == distance_cache.end()) {
-                // Calculate and store the distance
-                distance_cache[key] = sqrt(squared_euclidean_distance(vectors[i], vectors[j]));
-            }
-
-            total_distance += distance_cache[key];
-
-            // Early pruning if current total exceeds the minimum
-            if (total_distance > min_distance) break;
-        }
-
-        if (total_distance < min_distance) {
-            min_distance = total_distance;
-            medoid_id = i;
-        }
-    }
-
-    return medoid_id;*/
     long double min_distance = numeric_limits<double>::max();
     int medoid_id = 0;
     int num_vectors = vectors.size();
