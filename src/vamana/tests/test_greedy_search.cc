@@ -25,9 +25,9 @@ TEST(TestGreedySearch, LinearGraph) {
     G.addEdgeDirected(1, 2);
     G.addEdgeDirected(2, 3);
 
-    pair<set<int>, set<int>> result = greedy_graph_search(&G, 0, 3, vD, 2, 3, false);
-    set<int> L = result.first;
-    set<int> V = result.second;
+    pair<unordered_set<int>, unordered_set<int>> result = greedy_graph_search(&G, 0, 3, vD, 2, 3, false);
+    unordered_set<int> L = result.first;
+    unordered_set<int> V = result.second;
 
     /*
     * Expected Output:
@@ -69,9 +69,9 @@ TEST(TestGreedySearch, TwoWayLinearGraph) {
     G.addEdgeDirected(2, 3);
     G.addEdgeDirected(3, 2);
 
-    pair<set<int>, set<int>> result = greedy_graph_search(&G, 0, 2, vC, 2, 3, false);
-    set<int> L = result.first;
-    set<int> V = result.second;
+    pair<unordered_set<int>, unordered_set<int>> result = greedy_graph_search(&G, 0, 2, vC, 2, 3, false);
+    unordered_set<int> L = result.first;
+    unordered_set<int> V = result.second;
 
     /*
     * Expected Output:
@@ -111,9 +111,9 @@ TEST(TestGreedySearch, QueryNotInGraph) {
     G.addEdgeDirected(1, 2);
     G.addEdgeDirected(2, 3);
 
-    pair<set<int>, set<int>> result = greedy_graph_search(&G, 0, 0, vQ, 2, 3, false);
-    set<int> L = result.first;
-    set<int> V = result.second;
+    pair<unordered_set<int>, unordered_set<int>> result = greedy_graph_search(&G, 0, 0, vQ, 2, 3, false);
+    unordered_set<int> L = result.first;
+    unordered_set<int> V = result.second;
 
     /*
     * Expected Output:
@@ -156,9 +156,9 @@ TEST(TestGreedySearch, SparseGraph) {
     G.addEdgeDirected(1, 2);
     G.addEdgeDirected(2, 3);
 
-    pair<set<int>, set<int>> result = greedy_graph_search(&G, 0, 3, vD, 2, 3, false);
-    set<int> L = result.first;
-    set<int> V = result.second;
+    pair<unordered_set<int>, unordered_set<int>> result = greedy_graph_search(&G, 0, 3, vD, 2, 3, false);
+    unordered_set<int> L = result.first;
+    unordered_set<int> V = result.second;
 
     /*
     * Expected Output:

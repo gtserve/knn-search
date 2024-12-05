@@ -6,7 +6,6 @@
 #define VECTOR_NODE_H
 
 #include <vector>
-#include <unordered_set>
 #include <data_vector.h>
 
 
@@ -15,9 +14,6 @@ class vector_node {
 private:
     int node_id;
     DataVector<T> *data_vector;
-
-    //list of filters of current node
-    unordered_set<int> F;
 
 public:
     vector_node(const int node_id, vector<T> components); //create node
@@ -32,7 +28,7 @@ public:
 
     double getDistance(vector<T> &other);
 
-    unordered_set<int> get_node_filters();
+    set<int> getFilters() const;
 };
 
 template<typename T>
@@ -52,8 +48,7 @@ int vector_node<T>::vector_node::get_node_id() {
 }
 
 template <typename T>
-DataVector<T>* vector_node<T>::vector_node::get_coordinates()
-{
+DataVector<T>* vector_node<T>::vector_node::get_coordinates() {
     return this->data_vector;
 }
 
@@ -67,11 +62,9 @@ double vector_node<T>::getDistance(vector<T> &other) {
     return this->data_vector->getDistance(other);
 }
 
-
 template<typename T>
-unordered_set<int> vector_node<T>::get_node_filters()
-{
-    return this->F;
+set<int> vector_node<T>::getFilters() const {
+    return this->data_vector->getFilters();
 }
 
 

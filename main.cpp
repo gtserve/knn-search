@@ -88,16 +88,16 @@ int main(int argc, char *argv[]) {
     cout << "Run Vamana! [Time: " << vamana_duration.count() << "s ]" << endl;
 
     auto greedy_start = std::chrono::high_resolution_clock::now();
-    pair<set<int>, unordered_set<int> > greedy_result;
+    pair<unordered_set<int>, unordered_set<int> > greedy_result;
     greedy_result = greedy_graph_search(&G, MEDOID, 0, query_vectors[0], opt.k, opt.L, false);
     auto greedy_end = std::chrono::high_resolution_clock::now();
     auto greedy_duration = std::chrono::duration_cast<std::chrono::milliseconds>(greedy_end - greedy_start);
     cout << "Run Greedy! [Time: " << greedy_duration.count() << "ms ]" << endl;
 
-    set<int> L = greedy_result.first;
+    unordered_set<int> L = greedy_result.first;
     unordered_set<int> V = greedy_result.second;
 
-    set<int> T;
+    unordered_set<int> T;
     for (const int &i: gt_vectors[0]) T.insert(i);
 
     cout << "k-nearest neighbours [" << L.size() << "]: ";

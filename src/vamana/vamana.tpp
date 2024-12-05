@@ -13,32 +13,29 @@
 #include <unordered_map>
 
 
-
-
 template<typename T>
-pair<set<int>, unordered_set<int> > greedy_graph_search(
+pair<unordered_set<int>, unordered_set<int> > greedy_graph_search(
     graph<T> *graph,
     const int starting,
     const int query_id,
     vector<T> query_vector,
     const int K,
     const int L,
-    const bool vamana) {
-
-
-
+    const bool vamana
+) {
     //vector that holds distances from nodes to other nodes
 
     unordered_set<int> visited_ids;
-    set<int> neighbors_ids;
+
+    //set<int> visited_ids;
+
+    unordered_set<int> neighbors_ids;
 
     neighbors_ids.insert(starting);
 
     unordered_set<int> diff;
-    for(const int p : neighbors_ids)
-    {
-        if(visited_ids.find(p) == visited_ids.end())
-        {
+    for (const int p: neighbors_ids) {
+        if (visited_ids.find(p) == visited_ids.end()) {
             diff.insert(p);
         }
     }
@@ -110,10 +107,8 @@ pair<set<int>, unordered_set<int> > greedy_graph_search(
 
 
         diff.clear();
-        for(const int p : neighbors_ids)
-        {
-            if(visited_ids.find(p) == visited_ids.end())
-            {
+        for (const int p: neighbors_ids) {
+            if (visited_ids.find(p) == visited_ids.end()) {
                 diff.insert(p);
             }
         }
@@ -151,7 +146,6 @@ pair<set<int>, unordered_set<int> > greedy_graph_search(
 
     return {neighbors_ids, visited_ids};
 }
-
 
 template<typename T>
 pair<set<int>, unordered_set<int> > filtered_greedy_graph_search(
@@ -518,7 +512,6 @@ void filtered_robustPrune(
     }
 }
 
-
 template<typename T>
 void vamana(
     graph<T> *G,
@@ -528,7 +521,6 @@ void vamana(
     const int L_max,
     const int R
 ) {
-
     /*following values only for debugging improved performance*/
     unsigned int use_of_greedy=0;
     unsigned int use_of_robust=0;
@@ -571,11 +563,100 @@ void vamana(
         for (const int j: G->getNodeNeighbours(i)) {
             if (G->getNodeNeighbours(j).size() + 1 > R) {
                 unordered_set<int> C;
+                C.reserve(R + 1);
+                for (const int n: G->getNodeNeighbours(j)) C.insert(n);
+                C.insert(i);
+                robustPrune(G, j, C, a, R);
+                use_of_robust++;
+            } else {
+                G->addEdgeDirected(j, i);
+            }
+        }
+    }
+    printf("use_of_greedy = %i\n", use_of_greedy);
+    printf("use_of_robust = %i\n", use_of_robust);
+}
+
+template<typename T>
+void filteredRobustPrune(graph<T> *G, const int p, unordered_set<int> &V, const float a, const int R) {
+    vector_node<T> *Np = G->get_node(p);
+
+    for (const int n: G->getNodeNeighbours(p))
+        V.insert(n);
+    V.erase(p);
+    G->clearNeighbours(p);
+
+    while (!V.empty()) {
+        int p_best;
+        long double min_distance = 1e10;
+        for (const int c: V) {
+            long double candidate_distance = G->getDistance(p, c);
+            if (candidate_distance < min_distance) {
+                min_distance = candidate_distance;
+                p_best = c;
+            }
+        }
+
+        vector_node<T> *Np_best = G->get_node(p_best);
+        G->addEdgeDirected(p, p_best);
+
+        if (G->getNodeNeighbours(p).size() == R)
+            break;
+
+        for (const int c: V) {
+            vector_node<T> *Nc = G->get_node(c);
+            set<int> Fp = Np->getFilters();
+            set<int> Fc = Nc->getFilters();
+            set<int> Fp_best = Np_best->getFilters();
+
+            std::set<int> F_inter;
+            std::set_intersection(
+                Fc.begin(), Fc.end(),
+                Fp.begin(), Fp.end(),
+                std::inserter(F_inter, F_inter.begin()));
+
+            if (!includes(Fp_best.begin(), Fp_best.end(), F_inter.begin(), F_inter.end()))
+                continue;
+
+            if (a * G->getDistance(p_best, c) <= G->getDistance(p, c))
+                V.erase(c);
+        }
+    }
+}
+
+template<typename T>
+void filteredVamana(
+    graph<T> *G,
+    vector<vector<T> > &data_set,
+    const int medoid_id,
+    const float a,
+    const int L_max,
+    const int R
+) {
+    vector<int> rand_sequence = randomPermutation(data_set.size());
+
+    for (const int i: rand_sequence) {
+        pair<unordered_set<int>, unordered_set<int> > greedy_result;
+        greedy_result = greedy_graph_search(G,medoid_id, i, data_set[i], 1, L_max, true);
+        //set<int> L = greedy_result.first;
+        unordered_set<int> V = greedy_result.second;
+
+        //auto robust_start = std::chrono::high_resolution_clock::now();
+        robustPrune(G, i, V, a, R);
+        //auto robust_end = std::chrono::high_resolution_clock::now();
+        //auto robust_duration = std::chrono::duration_cast<std::chrono::milliseconds>(robust_end - robust_start);
+        //robust_time+=robust_duration.count();
+
+        //cout << "Robust took [Time: " << robust_duration.count() << "ms ]" << endl;
+        use_of_robust++;
+
+        for (const int j: G->getNodeNeighbours(i)) {
+            if (G->getNodeNeighbours(j).size() + 1 > R) {
+                unordered_set<int> C;
                 C.reserve(R+1);
                 for (const int n: G->getNodeNeighbours(j)) C.insert(n);
                 C.insert(i);
                 robustPrune(G, j, C, a, R);
-
                 use_of_robust++;
             } else {
                 G->addEdgeDirected(j, i);

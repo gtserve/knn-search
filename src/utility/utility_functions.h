@@ -10,8 +10,10 @@
 #include <cmath>
 #include <vector>
 #include <algorithm>
+#include <map>
 #include <set>
 #include <unordered_map>
+#include <unordered_set>
 
 using namespace std;
 
@@ -32,7 +34,7 @@ struct PairHash
 
 vector<int> randomPermutation(const int N);
 
-float recall(const set<int> &X, const set<int> &T);
+float recall(const unordered_set<int> &X, const std::unordered_set<int> &T);
 
 // function to calculate euclidean distance between two vertices. Vertices may have many instances
 template<typename T>

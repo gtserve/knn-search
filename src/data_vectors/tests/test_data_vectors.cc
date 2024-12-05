@@ -42,3 +42,11 @@ TEST(TestDataVector, TestDistanceFromDataVector) {
 
   EXPECT_EQ(dv1.getDistance(&dv2), sqrt(2));
 }
+
+TEST(TestDataVector, Filters) {
+  vector<int> v = {1, 2, 3, 4, 5};
+  unordered_set<int> f = {9, 10};
+  DataVector<int> dv(v, f);
+  dv.print();
+  EXPECT_EQ(dv.getSize(), 5);
+}

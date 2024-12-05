@@ -13,42 +13,79 @@
 
 
 #include <vector>
+
 #include <utility_functions.h>
 
-template <typename T>
+template<typename T>
 class DataVector {
     std::vector<T> components;
+    std::set<int> filters;
 
 public:
     explicit DataVector(std::vector<T> &components);
+
+    DataVector(const std::vector<T> &components, const std::set<int> &filters);
+
     int getSize() const;
+
     std::vector<T> getComponents() const;
-    double getDistance(DataVector<T>* other) const;
+
+    std::set<int> getFilters() const;
+
+    double getDistance(DataVector<T> *other) const;
+
     double getDistance(vector<T> &other) const;
+
+    void print();
 };
 
-template <typename T>
+template<typename T>
 DataVector<T>::DataVector(std::vector<T> &components)
-	: components(components) {}
-
-template <typename T>
-int DataVector<T>::getSize() const {
-	return this->components.size();
+    : components(components) {
 }
 
-template <typename T>
+template<typename T>
+DataVector<T>::DataVector(const std::vector<T> &components, const std::set<int> &filters)
+    : components(components), filters(filters) {
+}
+
+template<typename T>
+int DataVector<T>::getSize() const {
+    return this->components.size();
+}
+
+template<typename T>
 std::vector<T> DataVector<T>::getComponents() const {
     return this->components;
 }
 
 template<typename T>
+std::set<int> DataVector<T>::getFilters() const {
+    return this->filters;
+}
+
+template<typename T>
 double DataVector<T>::getDistance(DataVector<T> *other) const {
-    return squared_euclidean_distance(this->components, other->getComponents());
+    return euclidean_distance(this->components, other->getComponents());
 }
 
 template<typename T>
 double DataVector<T>::getDistance(vector<T> &other) const {
-    return squared_euclidean_distance(this->components, other);
+    return euclidean_distance(this->components, other);
+}
+
+template<typename T>
+void DataVector<T>::print() {
+    if (!filters.empty()) {
+        std::cout << "[";
+        for (const auto &filter: this->filters)
+            std::cout << filter << " ";
+        std::cout << "\b] ";
+    }
+
+    for (const auto &component: this->components)
+        std::cout << component << ", ";
+    std::cout << "\b\b" << std::endl;
 }
 
 

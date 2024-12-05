@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
+#include <map>
 #include <set>
 #include <unordered_set>
 
@@ -33,18 +34,12 @@ vector<int> randomPermutation(const int N) {
     return sequence;
 }
 
-float recall(const set<int> &X, const set<int> &T) {
-    set<int> I;
+float recall(const unordered_set<int> &X, const unordered_set<int> &T) {
+    unordered_set<int> I;
     set_intersection(
         X.begin(), X.end(),
         T.begin(), T.end(),
         inserter(I, I.begin()));
-
-
-    //cout << "I[" << I.size() << "]: ";
-    //for (const int &id: I) cout << id << " ";
-    //cout << endl;
-
 
     return static_cast<float> (I.size()) / static_cast<float> (X.size());
 }
