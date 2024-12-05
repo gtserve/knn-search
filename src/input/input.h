@@ -15,11 +15,11 @@
 #include <fstream>
 #include <vector>
 
-#include <data_vector.h>
 
+void readSigmodVectors(const std::string &file_path, int num_attributes, int vec_dimension, bool queries, std::vector<std::vector<float> > &data);
 
-template <typename T>
-void readVectors(const std::string &file_name, std::vector<std::vector<T>>& vectors) {
+template<typename T>
+void readTexmexVectors(const std::string &file_name, std::vector<std::vector<T> > &vectors) {
     std::ifstream ifs(file_name, std::ios::binary);
 
     if (!ifs.is_open()) {
@@ -31,7 +31,7 @@ void readVectors(const std::string &file_name, std::vector<std::vector<T>>& vect
         // Read dimension of data points.
         int dimension;
         ifs.read(reinterpret_cast<char *>(&dimension), sizeof(int));
-        if (!ifs) break;    // if EOF was read, break loop.
+        if (!ifs) break; // if EOF was read, break loop.
 
         std::vector<T> v(dimension);
         ifs.read(reinterpret_cast<char *>(v.data()), dimension * sizeof(T));

@@ -38,7 +38,7 @@ TEST(TestInput, EmptyVectorFile) {
 
     // Read binary file.
     vector<vector<int>> vectors;
-    readVectors<int> (file_name, vectors);
+    readTexmexVectors<int> (file_name, vectors);
 
     // Delete binary file.
     if (remove(file_name) != 0) {
@@ -56,7 +56,7 @@ TEST(TestInput, OneVectorFile) {
 
     // Read binary file.
     vector<vector <int>> data_vectors;
-    readVectors<int> (file_name, data_vectors);
+    readTexmexVectors<int> (file_name, data_vectors);
 
     // Delete binary file.
     if (remove(file_name) != 0) {
@@ -74,7 +74,7 @@ TEST(TestInput, OneThreeVectorFile) {
 
     // Read binary file.
     vector<vector <int>> data_vectors;
-    readVectors<int> (file_name, data_vectors);
+    readTexmexVectors<int> (file_name, data_vectors);
 
     // Delete binary file.
     if (remove(file_name) != 0) {
@@ -96,7 +96,7 @@ TEST(TestInput, ThreeThreeVectorFile) {
 
     // Read binary file.
     vector<vector <int>> data_vectors;
-    readVectors<int> (file_name, data_vectors);
+    readTexmexVectors<int> (file_name, data_vectors);
 
     // Delete binary file.
     if (remove(file_name) != 0) {
