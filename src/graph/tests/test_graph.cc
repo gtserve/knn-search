@@ -34,7 +34,7 @@ TEST(TestGraph, TestNeighbours) {
     graph<int> G(vecs);
     G.generate_random_graph(3);
 
-    set<int> neighbours = G.getNodeNeighbours(0);
+    unordered_set<int> neighbours = G.getNodeNeighbours(0);
     EXPECT_EQ(neighbours.size(), 3);
 }
 
@@ -47,6 +47,6 @@ TEST(TestGraph, TestClearNeighbours) {
     G.generate_random_graph(3);
     G.clearNeighbours(0);
 
-    set<int> neighbours = G.getNodeNeighbours(0);
+    unordered_set<int> neighbours = G.getNodeNeighbours(0);
     EXPECT_EQ(neighbours.size(), 0);
 }
