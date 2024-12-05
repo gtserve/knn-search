@@ -17,7 +17,7 @@
 #include <data_vector.h>
 #include <unordered_set>
 #include <unordered_map>
-=======
+
 #include <vector_node.h>
 
 
@@ -34,7 +34,7 @@ private:
 public:
 
     graph(const vector<vector<T>> &vectors,const int R); //initialise graph
-=======
+
     graph(const vector<vector<T> > &vectors); //initialise graph
 
     ~graph();
@@ -64,9 +64,10 @@ public:
 //initialize graph
 template<typename T>
 
-graph<T>::graph(const vector<vector<T>> &vectors,const int R) {
-=======
-graph<T>::graph(const vector<vector<T> > &vectors) {
+//graph<T>::graph(const vector<vector<T> > &vectors)
+
+graph<T>::graph(const vector<vector<T>> &vectors,const int R)
+ {
 
     for (int i = 0; i < vectors.size(); i++) {
         auto *new_node = new vector_node<T>(i, vectors[i]);
@@ -106,13 +107,13 @@ vector_node<T> *graph<T>::get_node(int id) {
     return this->nodes[id];
 }
 
+/*
+template <typename T>
+set<int> graph<T>::getNodeNeighbours(const int id)
+*/
 
 template <typename T>
 unordered_set<int> graph<T>::getNodeNeighbours(const int id) {
-=======
-template<typename T>
-set<int> graph<T>::getNodeNeighbours(const int id) {
-
     return this->neighbours[id];
 }
 
@@ -179,6 +180,6 @@ void graph<T>::addDistance(int x, int y, long double distance)
 //
 // void print_graph(graph);
 
-=======
+
 
 #endif //GRAPH_VECTOR_H

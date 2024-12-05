@@ -11,7 +11,7 @@
 #include <data_vector.h>
 #include <queue>
 #include <unordered_map>
-=======
+
 
 
 
@@ -30,8 +30,8 @@ pair<set<int>, unordered_set<int> > greedy_graph_search(
     //vector that holds distances from nodes to other nodes
 
     unordered_set<int> visited_ids;
-=======
-    set<int> visited_ids;
+
+    //set<int> visited_ids;
 
     set<int> neighbors_ids;
 
@@ -238,7 +238,7 @@ void vamana(
 
     for (const int i: rand_sequence) {
         auto greedy_start = std::chrono::high_resolution_clock::now();
-        pair<set<int>, unordered_set<int> > greedy_result = greedy_graph_search_revision(G, medoid_id, i, data_set[i], 1, L_max, true);
+        pair<set<int>, unordered_set<int> > greedy_result = greedy_graph_search(G, medoid_id, i, data_set[i], 1, L_max, true);
         auto greedy_end = std::chrono::high_resolution_clock::now();
         auto greedy_duration = std::chrono::duration_cast<std::chrono::milliseconds>(greedy_end - greedy_start);
         //cout << "revised greedy took [Time: " << greedy_duration.count() << "ms ]" << endl;
@@ -249,7 +249,7 @@ void vamana(
         unordered_set<int> V = greedy_result.second;
 
         //auto robust_start = std::chrono::high_resolution_clock::now();
-        robustPrune_revision(G, i, V, a, R);
+        robustPrune(G, i, V, a, R);
         //auto robust_end = std::chrono::high_resolution_clock::now();
         //auto robust_duration = std::chrono::duration_cast<std::chrono::milliseconds>(robust_end - robust_start);
         //robust_time+=robust_duration.count();
@@ -263,7 +263,7 @@ void vamana(
                 C.reserve(R+1);
                 for (const int n: G->getNodeNeighbours(j)) C.insert(n);
                 C.insert(i);
-                robustPrune_revision(G, j, C, a, R);
+                robustPrune(G, j, C, a, R);
                 use_of_robust++;
             } else {
                 G->addEdgeDirected(j, i);
