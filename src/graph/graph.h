@@ -28,6 +28,8 @@ private:
     vector<vector_node<T> *> nodes; //vector that stores alla vertices
     map<int, unordered_set<int> > neighbours; // Adjacency List
 
+    unordered_map<int, unordered_set<int> > node_filters;//map that stores what nodes are associated with which filter
+
     //unordered map for storing distances TEST TEST
     unordered_map<pair<int, int>, long double,PairHash> distances_map;
 
@@ -59,8 +61,13 @@ public:
     long double getDistance(int x, int y);
 
     void addDistance(int x, int y, long double distance);
+
+    void add_node_filter(int f,int node);
+
+    unordered_set<int> get_nodes_for_filter(int f);
 };
 
+//graph<T>::graph(const vector<vector<T> > &vectors) {
 //initialize graph
 template<typename T>
 graph<T>::graph(const vector<vector<T> > &vectors)
@@ -73,9 +80,11 @@ graph<T>::graph(const vector<vector<T> > &vectors)
     }
 }
 
+
 template<typename T>
 graph<T>::graph(const vector<vector<T>> &vectors,const int R)
  {
+
 
     for (int i = 0; i < vectors.size(); i++) {
         auto *new_node = new vector_node<T>(i, vectors[i]);
@@ -171,7 +180,17 @@ void graph<T>::addDistance(int x, int y, long double distance)
     this->distances_map[{min(x,y),max(x,y)}]=distance;
 }
 
+template<typename T>
+void graph<T>::add_node_filter(int f, int node)
+{
+    this->node_filters[f].insert(node);
+}
 
+template<typename T>
+unordered_set<int> graph<T>::get_nodes_for_filter(int f)
+{
+    return this->node_filters[f];
+}
 
 // //add new vertice in vertice vector
 // graph add_vector(int, list<int>);
