@@ -7,9 +7,13 @@
 
 #include <graph.h>
 #include <utility_functions.h>
+
 #include <data_vector.h>
 #include <queue>
 #include <unordered_map>
+=======
+
+
 
 template<typename T>
 pair<set<int>, unordered_set<int> > greedy_graph_search(
@@ -22,9 +26,13 @@ pair<set<int>, unordered_set<int> > greedy_graph_search(
     const bool vamana) {
 
 
+
     //vector that holds distances from nodes to other nodes
 
     unordered_set<int> visited_ids;
+=======
+    set<int> visited_ids;
+
     set<int> neighbors_ids;
 
     neighbors_ids.insert(starting);

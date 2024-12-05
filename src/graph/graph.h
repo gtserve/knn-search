@@ -12,15 +12,15 @@
 #include <fstream>
 #include <map>
 
+
 #include "vector_node.h"
 #include <data_vector.h>
 #include <unordered_set>
 #include <unordered_map>
+=======
+#include <vector_node.h>
 
 
-#define NEIGHBOR 1000
-
-using namespace std;
 
 template<typename T>
 class graph {
@@ -32,14 +32,16 @@ private:
     unordered_map<pair<int, int>, long double,PairHash> distances_map;
 
 public:
+
     graph(const vector<vector<T>> &vectors,const int R); //initialise graph
+=======
+    graph(const vector<vector<T> > &vectors); //initialise graph
+
     ~graph();
 
-    // void add_node(int,list<int>); // add new vector to list of vertices
-    //void add_neighbor_to_vector(int,neighbor);
     void generate_random_graph(const int R);
 
-    void print_graph();
+    void print();
 
     int get_vertices(); //return number of vertices in graph
     vector_node<T> *get_node(int);
@@ -61,7 +63,11 @@ public:
 
 //initialize graph
 template<typename T>
+
 graph<T>::graph(const vector<vector<T>> &vectors,const int R) {
+=======
+graph<T>::graph(const vector<vector<T> > &vectors) {
+
     for (int i = 0; i < vectors.size(); i++) {
         auto *new_node = new vector_node<T>(i, vectors[i]);
         this->nodes.push_back(new_node);
@@ -75,23 +81,6 @@ graph<T>::~graph() {
         delete(this->nodes[i]);
     }
 }
-
-
-// void graph::add_node(int id, list<int> coordinates)
-// {
-//     //creating a temp node to add to graph
-//     vector_node temp(id,coordinates);
-//
-//     this->vertices++;
-//     this->nodes.push_back(temp);
-// }
-
-
-/*void graph::add_neighbor_to_vector(int node, neighbor n)
-{
-    this->vertices_array[node].add_neighbor(n);
-}
- */
 
 template<typename T>
 void graph<T>::generate_random_graph(const int R) {
@@ -117,36 +106,42 @@ vector_node<T> *graph<T>::get_node(int id) {
     return this->nodes[id];
 }
 
+
 template <typename T>
 unordered_set<int> graph<T>::getNodeNeighbours(const int id) {
+=======
+template<typename T>
+set<int> graph<T>::getNodeNeighbours(const int id) {
+
     return this->neighbours[id];
 }
 
 template<typename T>
-void graph<T>::print_graph() {
-    for (const auto &pair : this->neighbours) {
+void graph<T>::print() {
+    for (const auto &pair: this->neighbours) {
         cout << "N[" << pair.first << "] ->";
-        for (const auto &neighbour : pair.second) {
+        for (const auto &neighbour: pair.second) {
             cout << " N[" << neighbour << "]";
         }
         cout << endl;
     }
 }
 
-template <typename T>
+template<typename T>
 void graph<T>::addEdgeDirected(const int u, const int v) {
     this->neighbours[u].insert(v);
 }
 
-template <typename T>
+template<typename T>
 void graph<T>::deleteEdgeDirected(const int u, const int v) {
     this->neighbours[u].erase(v);
 }
 
-template <typename T>
+template<typename T>
 void graph<T>::clearNeighbours(const int id) {
     this->neighbours[id].clear();
 }
+
 
 
 
@@ -183,5 +178,7 @@ void graph<T>::addDistance(int x, int y, long double distance)
 // void robust_prune(graph *, vector_node *node, vector<vector_node *> candidates, int a, int R);
 //
 // void print_graph(graph);
+
+=======
 
 #endif //GRAPH_VECTOR_H
