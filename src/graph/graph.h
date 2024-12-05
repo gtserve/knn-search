@@ -12,17 +12,31 @@
 #include <fstream>
 #include <map>
 
+
+#include "vector_node.h"
+#include <data_vector.h>
+#include <unordered_set>
+#include <unordered_map>
+=======
 #include <vector_node.h>
+
 
 
 template<typename T>
 class graph {
 private:
     vector<vector_node<T> *> nodes; //vector that stores alla vertices
-    map<int, set<int> > neighbours; // Adjacency List
+    map<int, unordered_set<int> > neighbours; // Adjacency List
+
+    //unordered map for storing distances TEST TEST
+    unordered_map<pair<int, int>, long double,PairHash> distances_map;
 
 public:
+
+    graph(const vector<vector<T>> &vectors,const int R); //initialise graph
+=======
     graph(const vector<vector<T> > &vectors); //initialise graph
+
     ~graph();
 
     void generate_random_graph(const int R);
@@ -32,21 +46,32 @@ public:
     int get_vertices(); //return number of vertices in graph
     vector_node<T> *get_node(int);
 
-    set<int> getNodeNeighbours(int id);
+    unordered_set<int> getNodeNeighbours(int id);
 
     void addEdgeDirected(int u, int v);
 
     void deleteEdgeDirected(int u, int v);
 
     void clearNeighbours(int id);
+
+
+    //testing new unordered map for storing distances
+    long double getDistance(int x, int y);
+
+    void addDistance(int x, int y, long double distance);
 };
 
 //initialize graph
 template<typename T>
+
+graph<T>::graph(const vector<vector<T>> &vectors,const int R) {
+=======
 graph<T>::graph(const vector<vector<T> > &vectors) {
+
     for (int i = 0; i < vectors.size(); i++) {
         auto *new_node = new vector_node<T>(i, vectors[i]);
         this->nodes.push_back(new_node);
+        neighbours[i].reserve(R);
     }
 }
 
@@ -81,8 +106,13 @@ vector_node<T> *graph<T>::get_node(int id) {
     return this->nodes[id];
 }
 
+
+template <typename T>
+unordered_set<int> graph<T>::getNodeNeighbours(const int id) {
+=======
 template<typename T>
 set<int> graph<T>::getNodeNeighbours(const int id) {
+
     return this->neighbours[id];
 }
 
@@ -112,5 +142,43 @@ void graph<T>::clearNeighbours(const int id) {
     this->neighbours[id].clear();
 }
 
+
+
+
+template<typename T>
+long double graph<T>::getDistance(int x, int y)
+{
+    //auto it = this->distances_map.find({min(x,y),max(x,y)});
+     if (this->distances_map.find({min(x,y),max(x,y)}) != this->distances_map.end())
+     {
+        return this->distances_map[{min(x,y),max(x,y)}];
+     }
+    return 0.0;
+}
+
+template<typename T>
+void graph<T>::addDistance(int x, int y, long double distance)
+{
+    this->distances_map[{min(x,y),max(x,y)}]=distance;
+}
+
+
+
+// //add new vertice in vertice vector
+// graph add_vector(int, list<int>);
+//
+// //function that takes file as argument and generates a random graph
+// graph generate_random_graph(graph *, fstream &);
+//
+// //search graph to find the K closest neighbors of node with id->querry_id starting from node->starting with search size L
+// set<pair<int, int>, compare_by_second_value> greedy_graph_search(graph *, vector_node *starting, vector_node querry,
+//                                                                  int k, int L);
+//
+// //check a candidate set of nodes(vector candidates) to form new neighbors for node
+// void robust_prune(graph *, vector_node *node, vector<vector_node *> candidates, int a, int R);
+//
+// void print_graph(graph);
+
+=======
 
 #endif //GRAPH_VECTOR_H

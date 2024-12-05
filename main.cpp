@@ -79,23 +79,23 @@ int main(int argc, char *argv[]) {
     auto medoid_duration = std::chrono::duration_cast<std::chrono::seconds>(medoid_end - medoid_start);
     cout << "Calculated Medoid: " << medoid_id << " [Time: " << medoid_duration.count() << "s ]" << endl;
 
-    graph<float> G(base_vectors);
+    graph<float> G(base_vectors,opt.R);
 
     auto vamana_start = std::chrono::high_resolution_clock::now();
-    vamana(&G, base_vectors, medoid_id, opt.a, opt.L, opt.R);
+    vamana(&G, base_vectors, MEDOID, opt.a, opt.L, opt.R);
     auto vamana_end = std::chrono::high_resolution_clock::now();
     auto vamana_duration = std::chrono::duration_cast<std::chrono::seconds>(vamana_end - vamana_start);
     cout << "Run Vamana! [Time: " << vamana_duration.count() << "s ]" << endl;
 
     auto greedy_start = std::chrono::high_resolution_clock::now();
-    pair<set<int>, set<int> > greedy_result;
-    greedy_result = greedy_graph_search(&G, medoid_id, 0, query_vectors[0], opt.k, opt.L, false);
+    pair<set<int>, unordered_set<int> > greedy_result;
+    greedy_result = greedy_graph_search(&G, MEDOID, 0, query_vectors[0], opt.k, opt.L, false);
     auto greedy_end = std::chrono::high_resolution_clock::now();
     auto greedy_duration = std::chrono::duration_cast<std::chrono::milliseconds>(greedy_end - greedy_start);
     cout << "Run Greedy! [Time: " << greedy_duration.count() << "ms ]" << endl;
 
     set<int> L = greedy_result.first;
-    set<int> V = greedy_result.second;
+    unordered_set<int> V = greedy_result.second;
 
     set<int> T;
     for (const int &i: gt_vectors[0]) T.insert(i);

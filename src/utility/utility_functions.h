@@ -11,6 +11,7 @@
 #include <vector>
 #include <algorithm>
 #include <set>
+#include <unordered_map>
 
 using namespace std;
 
@@ -18,6 +19,15 @@ using namespace std;
 struct compare_by_second_value
 {
     bool operator()(const pair<int, double>& p1, const pair<int, double>& p2) const;
+};
+
+struct PairHash
+{
+    template <class T1, class T2>
+    size_t operator()(const pair<T1, T2>& p) const
+    {
+        return hash<T1>()(p.first) ^ (hash<T2>()(p.second) << 1) * 0x9e3779b9;
+    }
 };
 
 vector<int> randomPermutation(const int N);
@@ -40,6 +50,25 @@ long double euclidean_distance(const vector<T> &parent_instances, const vector<T
     return sqrt(d);
 }
 
+template<typename T>
+long double squared_euclidean_distance(const vector<T> &parent_instances, const vector<T> &new_instances) {
+
+        if (parent_instances.size() != new_instances.size()) {
+            cerr << "[ERROR]: Attempt to calculate distance between vectors of different size." << endl;
+            return -0.1;
+        }
+
+        long double d = 0.0;
+
+        for (size_t i = 0; i < parent_instances.size(); ++i) {
+            long double diff = static_cast<long double>(parent_instances[i] - new_instances[i]);
+            d += diff * diff;
+        }
+
+        return d;
+    }
+
+
 template <typename T>
 int medoid(const vector<vector<T>> &vectors) {
     /* Returns the index of medoid vector.  */
@@ -49,14 +78,15 @@ int medoid(const vector<vector<T>> &vectors) {
         return -1;
     }
 
-    double min_distance = numeric_limits<double>::max();
+    long double min_distance = numeric_limits<double>::max();
     int medoid_id = 0;
     int num_vectors = vectors.size();
     for (int i = 0; i < num_vectors; i++) {
-        double distance = 0.0;
+        long double distance = 0.0;
         for (int j = 0; j < vectors.size(); j++) {
             // Distance with self is zero.
-            distance += euclidean_distance(vectors[i], vectors[j]);
+            distance += sqrt(squared_euclidean_distance(vectors[i], vectors[j]));
+            //cout << "distance is : " << sqrt(squared_euclidean_distance(vectors[i], vectors[j])) << endl;
             if (distance > min_distance) break;
 
         }
@@ -65,7 +95,7 @@ int medoid(const vector<vector<T>> &vectors) {
             medoid_id = i;
         }
     }
-
+    //cout << "Medoid ID: " << medoid_id << "With distance: " << min_distance << endl;
     return medoid_id;
 }
 
