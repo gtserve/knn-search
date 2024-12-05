@@ -30,9 +30,6 @@ pair<set<int>, unordered_set<int> > greedy_graph_search(
     //vector that holds distances from nodes to other nodes
 
     unordered_set<int> visited_ids;
-
-//    set<int> visited_ids;
-
     set<int> neighbors_ids;
 
     neighbors_ids.insert(starting);
@@ -578,56 +575,7 @@ void vamana(
                 for (const int n: G->getNodeNeighbours(j)) C.insert(n);
                 C.insert(i);
                 robustPrune(G, j, C, a, R);
-                use_of_robust++;
-            } else {
-                G->addEdgeDirected(j, i);
-            }
-        }
-    }
-    printf("use_of_greedy = %i\n", use_of_greedy);
-    printf("use_of_robust = %i\n", use_of_robust);
-}
 
-
-template<typename T>
-void filtered_vamana(
-    graph<T> *G,
-    vector<vector<T> > &data_set,
-    const int medoid_id,
-    const float a,
-    const int L_max,
-    const int R)
-{
-
-    /*following values only for debugging improved performance*/
-    unsigned int use_of_greedy=0;
-    unsigned int use_of_robust=0;
-
-
-
-    G->generate_random_graph(R);
-
-    vector<int> rand_sequence = randomPermutation(data_set.size());
-
-
-    for (const int i: rand_sequence) {
-
-        pair<set<int>, unordered_set<int> > greedy_result = greedy_graph_search(G, medoid_id, i, data_set[i], 1, L_max, true);
-        use_of_greedy++;
-        //set<int> L = greedy_result.first;
-        unordered_set<int> V = greedy_result.second;
-
-        robustPrune(G, i, V, a, R);
-
-        use_of_robust++;
-
-        for (const int j: G->getNodeNeighbours(i)) {
-            if (G->getNodeNeighbours(j).size() + 1 > R) {
-                unordered_set<int> C;
-                C.reserve(R+1);
-                for (const int n: G->getNodeNeighbours(j)) C.insert(n);
-                C.insert(i);
-                robustPrune(G, j, C, a, R);
                 use_of_robust++;
             } else {
                 G->addEdgeDirected(j, i);
