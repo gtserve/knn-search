@@ -8,9 +8,9 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
-#include <map>
-#include <set>
 #include <unordered_set>
+#include <chrono>
+#include <iomanip>
 
 using namespace std;
 
@@ -42,4 +42,18 @@ float recall(const unordered_set<int> &X, const unordered_set<int> &T) {
         inserter(I, I.begin()));
 
     return static_cast<float> (I.size()) / static_cast<float> (X.size());
+}
+
+std::string getCurrentTimestamp() {
+    auto now = std::chrono::system_clock::now();
+    auto time_t_now = std::chrono::system_clock::to_time_t(now);
+
+    // Convert to local time
+    std::tm local_time;
+    localtime_r(&time_t_now, &local_time);
+
+    // Format time into a string
+    std::ostringstream timestamp;
+    timestamp << std::put_time(&local_time, "%H-%M-%S");
+    return timestamp.str();
 }

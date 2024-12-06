@@ -37,6 +37,8 @@ public:
     double getDistance(vector<T> &other) const;
 
     void print();
+
+    void addFilter(const float &filter);
 };
 
 template<typename T>
@@ -90,5 +92,9 @@ void DataVector<T>::print() {
     std::cout << "\b\b" << std::endl;
 }
 
+template <typename T>
+void DataVector<T>::addFilter(const float &filter) {
+    this->filters.insert(filter);
+}
 
 #endif //DATA_VECTOR_H

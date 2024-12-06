@@ -24,13 +24,15 @@ public:
 
     int get_node_id();
 
-    DataVector<T>* get_coordinates();
+    vector<T> getComponents();
 
     double getDistance(vector_node<T>* other);
 
     double getDistance(vector<T> &other);
 
-    set<int> getFilters() const;
+    set<float> getFilters() const;
+
+    void addFilter(const float &filter);
 };
 
 template<typename T>
@@ -56,13 +58,13 @@ int vector_node<T>::vector_node::get_node_id() {
 }
 
 template <typename T>
-DataVector<T>* vector_node<T>::vector_node::get_coordinates() {
-    return this->data_vector;
+vector<T> vector_node<T>::vector_node::getComponents() {
+    return this->data_vector->getComponents();
 }
 
 template<typename T>
 double vector_node<T>::getDistance(vector_node<T> *other) {
-    return this->data_vector->getDistance(other->get_coordinates());
+    return this->data_vector->getDistance(other->getComponents());
 }
 
 template<typename T>
@@ -71,9 +73,13 @@ double vector_node<T>::getDistance(vector<T> &other) {
 }
 
 template<typename T>
-set<int> vector_node<T>::getFilters() const {
+set<float> vector_node<T>::getFilters() const {
     return this->data_vector->getFilters();
 }
 
+template <typename T>
+void vector_node<T>::addFilter(const float &filter) {
+    this->data_vector->addFilter(filter);
+}
 
 #endif //VECTOR_NODE_H
