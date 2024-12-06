@@ -258,7 +258,9 @@ unordered_map<float, int> graph<T>::findMedoids(const int threshold) {
 
 template<typename T>
 std::string graph<T>::saveGraphToDir(const string &dir_path) {
-    string file_name = dir_path + "/graph.bin";
+    string timestamp = getCurrentTimestamp();
+
+    string file_name = dir_path + "/graph_" + timestamp + ".bin";
 
     if (this->nodes.empty()) {
         std::cerr << "[ERROR]: Attempt to save empty Graph!" << std::endl;
@@ -302,6 +304,7 @@ std::string graph<T>::saveGraphToDir(const string &dir_path) {
     }
 
     ofs.close();
+    cout << "Saved Graph to '" << file_name << "'" << endl;
     return file_name;
 }
 
@@ -361,6 +364,7 @@ void graph<T>::loadGraphFromFile(const string &file_name) {
     }
 
     ifs.close();
+    cout << "Loaded Graph from '" << file_name << "'" << endl;
 }
 
 #endif //GRAPH_VECTOR_H

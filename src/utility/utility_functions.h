@@ -36,6 +36,8 @@ vector<int> randomPermutation(const int N);
 
 float recall(const unordered_set<int> &X, const std::unordered_set<int> &T);
 
+std::string getCurrentTimestamp();
+
 // function to calculate euclidean distance between two vertices. Vertices may have many instances
 template<typename T>
 long double euclidean_distance(const vector<T> &parent_instances, const vector<T> &new_instances) {
