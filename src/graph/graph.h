@@ -75,6 +75,8 @@ public:
     std::string saveGraphToDir(const string &dir_path);
 
     void loadGraphFromFile(const string &file_name);
+
+    unordered_set<int> getNodesWithFilter(const float filter) const;
 };
 
 //initialize graph
@@ -365,6 +367,11 @@ void graph<T>::loadGraphFromFile(const string &file_name) {
 
     ifs.close();
     cout << "Loaded Graph from '" << file_name << "'" << endl;
+}
+
+template <typename T>
+unordered_set<int> graph<T>::getNodesWithFilter(const float filter) const {
+    return this->nodes_with_filter[filter];
 }
 
 #endif //GRAPH_VECTOR_H

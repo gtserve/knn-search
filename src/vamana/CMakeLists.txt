@@ -9,6 +9,7 @@ add_library(
 target_link_libraries(
         vamana_library
         graph_library
+        input_library
 )
 
 target_include_directories(vamana_library PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
