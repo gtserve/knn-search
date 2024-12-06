@@ -7,10 +7,10 @@
 using namespace std;
 
 TEST(TestInputSigmod, DataVectors) {
-    vector<vector<float>> data_vectors;
-    vector<vector<float>> filters;
+    vector<vector<float> > data_vectors;
+    vector<vector<float> > filters;
     string data_path = DATA_PATH;
-    readSigmodVectors(data_path + "/dummy-data.bin", 2, DIMENSION, false, data_vectors, filters);
+    readSigmodVectors(data_path + "/dummy-data.bin", DIMENSION, false, data_vectors, filters);
 
     for (int i = 0; i < 10; i++) {
         cout << "[" << filters[i][0] << "] ";
@@ -25,10 +25,10 @@ TEST(TestInputSigmod, DataVectors) {
 }
 
 TEST(TestInputSigmod, DataQueries) {
-    vector<vector<float>> data_queries;
-    vector<vector<float>> filters;
+    vector<vector<float> > data_queries;
+    vector<vector<float> > filters;
     string data_path = DATA_PATH;
-    readSigmodVectors(data_path + "/dummy-queries.bin", 4, DIMENSION, true, data_queries, filters);
+    readSigmodVectors(data_path + "/dummy-queries.bin", DIMENSION, true, data_queries, filters);
 
     for (int i = 0; i < 10; i++) {
         cout << "[" << filters[i][0] << "] ";
@@ -40,4 +40,26 @@ TEST(TestInputSigmod, DataQueries) {
     cout << endl;
 
     cout << data_queries.size() << endl;
+}
+
+TEST(TestSigmod, GroundTruth) {
+    string data_path = DATA_PATH;
+    generateSigmodGroundTruthFile(
+        data_path + "/dummy-data.bin",
+        data_path + "/dummy-queries.bin",
+        data_path + "/dummy-groundtruth.bin",
+        100
+    );
+
+    vector<vector<int> > ground_truth;
+    readSigmodGroundTruth(data_path + "/dummy-groundtruth.bin", ground_truth);
+
+    for (int i = 0; i < ground_truth.size(); i++) {
+        cout << "q[" << i << "]: ";
+        for (int j = 0; j < ground_truth[i].size(); j++) {
+            cout << ground_truth[i][j] << ", ";
+        }
+        cout << "\b\b" << endl;
+    }
+    cout << endl;
 }
