@@ -13,6 +13,7 @@
 
 #define DATA_PATH "/home/gtserve/Code/k23a-project/data/siftsmall"
 #define MEDOID 8736
+#define QUERY_ID 0
 
 typedef struct {
     string vectors_path;
@@ -20,6 +21,7 @@ typedef struct {
     int k = 10;
     int L = 10;
     int R = 10;
+    int t = 10;
 } OptionsType;
 
 using namespace std;
@@ -29,7 +31,7 @@ int main(int argc, char *argv[]) {
 
     OptionsType opt;
     int option;
-    while ((option = getopt(argc, argv, "f:a:k:L:R:")) != EOF) {
+    while ((option = getopt(argc, argv, "f:a:k:L:R:t:")) != EOF) {
         switch (option) {
             case 'f':
                 opt.vectors_path = optarg;
@@ -45,6 +47,9 @@ int main(int argc, char *argv[]) {
                 break;
             case 'R':
                 opt.R = atoi(optarg);
+                break;
+            case 't':
+                opt.t = atoi(optarg);
                 break;
             case '?':
                 if ((optopt == 'c') || (optopt == 'b')) {
@@ -62,10 +67,9 @@ int main(int argc, char *argv[]) {
 
     auto vectors_start = std::chrono::high_resolution_clock::now();
     vector<vector<float> > data_vectors;
-    vector<vector<float> > data_filters;
+    vector<set<float> > data_filters;
     readSigmodVectors(
         opt.vectors_path + "/dummy-data.bin",
-        2,
         100,
         false,
         data_vectors,
@@ -73,10 +77,9 @@ int main(int argc, char *argv[]) {
     );
 
     vector<vector<float> > query_vectors;
-    vector<vector<float> > query_filters;
+    vector<set<float> > query_filters;
     readSigmodVectors(
-        opt.vectors_path + "/dummy-query.bin",
-        4,
+        opt.vectors_path + "/dummy-queries.bin",
         100,
         true,
         query_vectors,
@@ -84,52 +87,98 @@ int main(int argc, char *argv[]) {
     );
 
     vector<vector<int> > gt_vectors;
-    readTexmexVectors<int>(opt.vectors_path + "/siftsmall_groundtruth.ivecs", gt_vectors);
+    readSigmodGroundTruth(
+        opt.vectors_path + "/dummy-groundtruth.bin",
+        gt_vectors
+    );
+
     auto vectors_end = std::chrono::high_resolution_clock::now();
     auto vectors_duration = std::chrono::duration_cast<std::chrono::milliseconds>(vectors_end - vectors_start);
     cout << "Read vectors! [Time: " << vectors_duration.count() << "ms ]" << endl;
 
-    auto medoid_start = std::chrono::high_resolution_clock::now();
-    const int medoid_id = medoid(data_vectors);
-    auto medoid_end = std::chrono::high_resolution_clock::now();
-    auto medoid_duration = std::chrono::duration_cast<std::chrono::seconds>(medoid_end - medoid_start);
-    cout << "Calculated Medoid: " << medoid_id << " [Time: " << medoid_duration.count() << "s ]" << endl;
-
-    graph<float> G(data_vectors, opt.R);
+    graph<float> G(data_vectors, data_filters, opt.R);
 
     auto vamana_start = std::chrono::high_resolution_clock::now();
-    vamana(&G, data_vectors, MEDOID, opt.a, opt.L, opt.R);
+    filteredVamana(&G, data_vectors, data_filters, opt.a, opt.L, opt.R, opt.t);
     auto vamana_end = std::chrono::high_resolution_clock::now();
     auto vamana_duration = std::chrono::duration_cast<std::chrono::seconds>(vamana_end - vamana_start);
     cout << "Run Vamana! [Time: " << vamana_duration.count() << "s ]" << endl;
 
-    auto greedy_start = std::chrono::high_resolution_clock::now();
-    pair<unordered_set<int>, unordered_set<int> > greedy_result;
-    greedy_result = greedy_graph_search(&G, MEDOID, 0, query_vectors[0], opt.k, opt.L, false);
-    auto greedy_end = std::chrono::high_resolution_clock::now();
-    auto greedy_duration = std::chrono::duration_cast<std::chrono::milliseconds>(greedy_end - greedy_start);
-    cout << "Run Greedy! [Time: " << greedy_duration.count() << "ms ]" << endl;
+    unordered_map<float, int> st = G.getMedoids();
+    float unfiltered_recall = 0.0;
+    int unfiltered_counter = 0;
+    float filtered_recall = 0.0;
+    int filtered_counter = 0;
+    float total_recall = 0.0;
 
-    unordered_set<int> L = greedy_result.first;
-    unordered_set<int> V = greedy_result.second;
+    for (int i = 0; i < query_vectors.size(); ++i) {
+        set<int> S;
 
-    unordered_set<int> T;
-    for (const int &i: gt_vectors[0]) T.insert(i);
+        set<float> Fq;
+        if (*query_filters[i].begin() == -1) {
+            for (const auto &pair: st) {
+                Fq.insert(pair.first);
+                S.insert(st[pair.second]);
+            }
+        } else {
+            for (const auto &f: query_filters[i]) {
+                Fq.insert(f);
+                S.insert(st[f]);
+            }
+        }
 
-    cout << "k-nearest neighbours [" << L.size() << "]: ";
-    for (const int &id: L) cout << id << " ";
-    cout << endl;
+        auto greedy_start = std::chrono::high_resolution_clock::now();
 
-    cout << "V[" << V.size() << "]: ";
-    for (const int &id: V) cout << id << " ";
-    cout << endl;
+        pair<set<int>, set<int> > greedy_result;
+        greedy_result = filtered_greedy_graph_search(
+            &G, S, i, query_vectors[i], opt.k, opt.L, Fq, false
+        );
+        auto greedy_end = std::chrono::high_resolution_clock::now();
+        auto greedy_duration = std::chrono::duration_cast<std::chrono::milliseconds>(greedy_end - greedy_start);
+        cout << "Run Greedy! [Time: " << greedy_duration.count() << "ms ]  ";
 
-    cout << "T[" << T.size() << "]: ";
-    for (const int &id: T) cout << id << " ";
-    cout << endl;
+        set<int> L = greedy_result.first;
+        set<int> V = greedy_result.second;
 
-    float r = recall(L, T);
-    cout << "Recall: " << r << endl;
+        set<int> T;
+        for (const int &j: gt_vectors[i])
+            T.insert(j);
+
+        // cout << "k-nearest neighbours [" << L.size() << "]: ";
+        // for (const int &id: L)
+        //     cout << id << " ";
+        // cout << endl;
+        //
+        // cout << "V[" << V.size() << "]: ";
+        // for (const int &id: V)
+        //     cout << id << " ";
+        // cout << endl;
+        //
+        // cout << "T[" << T.size() << "]: ";
+        // for (const int &id: T)
+        //     cout << id << " ";
+        // cout << endl;
+
+        float r = recall(L, T);
+        cout << "Recall: " << r << endl;
+
+        if (*query_filters[i].begin() == -1) {
+            unfiltered_recall += r;
+            unfiltered_counter++;
+        } else {
+            filtered_recall += r;
+            filtered_counter++;
+        }
+        total_recall += r;
+    }
+
+    float avg_unfiltered_recall = unfiltered_recall / static_cast<float>(unfiltered_counter);
+    float avg_filtered_recall = filtered_recall / static_cast<float>(filtered_counter);
+    float avg_total_recall = total_recall / static_cast<float>(query_vectors.size());
+
+    cout << "Average Recall (Unfiltered): " << avg_unfiltered_recall << endl;
+    cout << "Average Recall (Filtered):   " << avg_filtered_recall << endl;
+    cout << "Average Recall (Total):      " << avg_total_recall << endl;
 
     auto time_end = chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::minutes>(time_end - time_start);

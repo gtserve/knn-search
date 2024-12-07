@@ -24,7 +24,7 @@ class DataVector {
 public:
     explicit DataVector(const std::vector<T> &components);
 
-    explicit DataVector(const std::vector<T> &components, const std::vector<float> &filters);
+    explicit DataVector(const std::vector<T> &components, const std::set<float> &filters);
 
     int getSize() const;
 
@@ -47,10 +47,8 @@ DataVector<T>::DataVector(const std::vector<T> &components)
 }
 
 template<typename T>
-DataVector<T>::DataVector(const std::vector<T> &components, const std::vector<float> &filters)
-    : components(components) {
-    for (const auto &filter: filters)
-        this->filters.insert(filter);
+DataVector<T>::DataVector(const std::vector<T> &components, const std::set<float> &filters)
+    : components(components), filters(filters) {
 }
 
 template<typename T>
@@ -70,12 +68,12 @@ std::set<float> DataVector<T>::getFilters() const {
 
 template<typename T>
 double DataVector<T>::getDistance(DataVector<T> *other) const {
-    return euclidean_distance(this->components, other->getComponents());
+    return squared_euclidean_distance(this->components, other->getComponents());
 }
 
 template<typename T>
 double DataVector<T>::getDistance(vector<T> &other) const {
-    return euclidean_distance(this->components, other);
+    return squared_euclidean_distance(this->components, other);
 }
 
 template<typename T>

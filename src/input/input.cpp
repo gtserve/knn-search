@@ -26,8 +26,8 @@ void readSigmodVectors(
     const string &file_path,
     const int vec_dimension,
     const bool queries,
-    vector<std::vector<float> > &vectors,
-    vector<vector<float> > &filters
+    vector<vector<float> > &vectors,
+    vector<set<float>> &filters
 ) {
     std::cout << "Reading Data from: " << file_path << std::endl;
     std::ifstream ifs(file_path, std::ios::binary);
@@ -42,6 +42,9 @@ void readSigmodVectors(
     ifs.read(reinterpret_cast<char *>(&N), sizeof(uint32_t));
     std::cout << "Reading " << N << " vectors ... " << std::endl;
 
+    vectors.reserve(N);
+    filters.reserve(N);
+
     for (int i = 0; i < N; i++) {
         if (queries) {
             float query_type;
@@ -54,14 +57,14 @@ void readSigmodVectors(
 
             if (query_type == 0) {
                 ifs.seekg(sizeof(float) * 3, ifs.cur);
-                vector<float> fs = {-1};
+                set<float> fs = {-1};
                 filters.push_back(fs);
             }
 
             if (query_type == 1) {
                 float temp;
                 ifs.read(reinterpret_cast<char *>(&temp), sizeof(float));
-                vector<float> fs = {temp};
+                set<float> fs = {temp};
                 filters.push_back(fs);
                 ifs.seekg(sizeof(float) * 2, ifs.cur);
             }
@@ -69,7 +72,7 @@ void readSigmodVectors(
             // Read filter.
             float temp;
             ifs.read(reinterpret_cast<char *>(&temp), sizeof(float));
-            vector<float> fs = {temp};
+            set<float> fs = {temp};
             filters.push_back(fs);
             // Ignore timestamp.
             ifs.seekg(sizeof(float), ifs.cur);
@@ -92,7 +95,7 @@ void generateSigmodGroundTruthFile(
     const int K_max
 ) {
     vector<vector<float> > data_vectors;
-    vector<vector<float> > data_filters;
+    vector<set<float> > data_filters;
     readSigmodVectors(
         data_file,
         100,
@@ -102,7 +105,7 @@ void generateSigmodGroundTruthFile(
     );
 
     vector<vector<float> > query_vectors;
-    vector<vector<float> > query_filters;
+    vector<set<float> > query_filters;
     readSigmodVectors(
         queries_file,
         100,
@@ -113,8 +116,8 @@ void generateSigmodGroundTruthFile(
 
     unordered_map<float, unordered_set<int> > nodes_with_filter;
     for (int i = 0; i < data_vectors.size(); i++) {
-        for (int j = 0; j < data_filters[i].size(); j++) {
-            nodes_with_filter[data_filters[i][j]].insert(i);
+        for (const auto &f: data_filters[i]) {
+            nodes_with_filter[f].insert(i);
         }
     }
 
@@ -133,13 +136,14 @@ void generateSigmodGroundTruthFile(
         vector<pair<long double, int> > distances;
         unordered_set<int> matching_vectors;
 
-        if (query_filters[i][0] == -1) {
+        float qf = *(query_filters[i].begin());     // Only one filter per query.
+        if (qf == -1) {
             // Unfiltered search.
-            for (int i = 0; i < data_vectors.size(); i++)
-                matching_vectors.insert(i);
+            for (int j = 0; j < data_vectors.size(); j++)
+                matching_vectors.insert(j);
         } else {
             // Filtered search.
-            matching_vectors = nodes_with_filter[query_filters[i][0]];
+            matching_vectors = nodes_with_filter[qf];
         }
 
         for (const auto &node_id: matching_vectors) {

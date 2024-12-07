@@ -34,8 +34,8 @@ vector<int> randomPermutation(const int N) {
     return sequence;
 }
 
-float recall(const unordered_set<int> &X, const unordered_set<int> &T) {
-    unordered_set<int> I;
+float recall(const set<int> &X, const set<int> &T) {
+    set<int> I;
     set_intersection(
         X.begin(), X.end(),
         T.begin(), T.end(),

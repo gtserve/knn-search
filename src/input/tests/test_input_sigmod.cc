@@ -8,15 +8,17 @@ using namespace std;
 
 TEST(TestInputSigmod, DataVectors) {
     vector<vector<float> > data_vectors;
-    vector<vector<float> > filters;
+    vector<set<float> > filters;
     string data_path = DATA_PATH;
     readSigmodVectors(data_path + "/dummy-data.bin", DIMENSION, false, data_vectors, filters);
 
     for (int i = 0; i < 10; i++) {
-        cout << "[" << filters[i][0] << "] ";
-        for (int j = 0; j < data_vectors[i].size(); j++) {
-            cout << data_vectors[i][j] << ", ";
-        }
+        for (const auto &f: filters[i])
+            cout << "[" << f << ", ";
+        cout << "\b\b] ";
+
+        for (const auto &x : data_vectors[i])
+            cout << x << ", ";
         cout << "\b\b" << endl;
     }
     cout << endl;
@@ -26,15 +28,17 @@ TEST(TestInputSigmod, DataVectors) {
 
 TEST(TestInputSigmod, DataQueries) {
     vector<vector<float> > data_queries;
-    vector<vector<float> > filters;
+    vector<set<float> > filters;
     string data_path = DATA_PATH;
     readSigmodVectors(data_path + "/dummy-queries.bin", DIMENSION, true, data_queries, filters);
 
     for (int i = 0; i < 10; i++) {
-        cout << "[" << filters[i][0] << "] ";
-        for (int j = 0; j < data_queries[i].size(); j++) {
-            cout << data_queries[i][j] << ", ";
-        }
+        for (const auto &f: filters[i])
+            cout << "[" << f << ", ";
+        cout << "\b\b] ";
+
+        for (const auto &x : data_queries[i])
+            cout << x << ", ";
         cout << "\b\b" << endl;
     }
     cout << endl;

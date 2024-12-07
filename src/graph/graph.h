@@ -33,12 +33,14 @@ private:
 
     set<float> total_filters;
 
+    unordered_map<float, int> medoids;
+
 public:
     graph(const vector<vector<T> > &vectors, const int R); //initialise graph
 
     graph(const vector<vector<T> > &vectors); //initialise graph
 
-    graph(const vector<vector<T> > &vectors, const int R, const vector<vector<float> > &filters); //initialise graph
+    graph(const vector<vector<T> > &vectors, const vector<set<float> > &filters, const int R); //initialise graph
 
     graph(const string &file_name);
 
@@ -76,7 +78,9 @@ public:
 
     void loadGraphFromFile(const string &file_name);
 
-    unordered_set<int> getNodesWithFilter(const float filter) const;
+    unordered_set<int> getNodesWithFilter(const float filter);
+
+    unordered_map<float, int> getMedoids() const;
 };
 
 //initialize graph
@@ -98,15 +102,15 @@ graph<T>::graph(const vector<vector<T> > &vectors, const int R) {
 }
 
 template<typename T>
-graph<T>::graph(const vector<vector<T> > &vectors, const int R, const vector<vector<float> > &filters) {
+graph<T>::graph(const vector<vector<T> > &vectors, const vector<set<float> > &filters, const int R) {
     for (int i = 0; i < vectors.size(); i++) {
         auto *new_node = new vector_node<T>(i, vectors[i], filters[i]);
         this->nodes.push_back(new_node);
         neighbours[i].reserve(R);
 
-        for (int j = 0; j < filters[i].size(); j++) {
-            this->nodes_with_filter[filters[i][j]].insert(i);
-            this->total_filters.insert(filters[i][j]);
+        for (const auto &f: filters[i]) {
+            this->nodes_with_filter[f].insert(i);
+            this->total_filters.insert(f);
         }
     }
 }
@@ -207,7 +211,7 @@ long double graph<T>::getDistance(int x, int y) {
     if (dist == 0.0) {
         vector_node<T> *Na = this->get_node(a);
         vector_node<T> *Nb = this->get_node(b);
-        dist = Na.getDistance(Nb);
+        dist = Na->getDistance(Nb);
         distances_map[{a, b}] = dist;
     }
     return dist;
@@ -236,11 +240,16 @@ unordered_map<float, int> graph<T>::findMedoids(const int threshold) {
     for (const auto &f: this->total_filters) {
         srand(time(NULL));
         unordered_set<int> Rf;
-        std::vector<int> setVector(this->nodes_with_filter[f].begin(), this->nodes_with_filter[f].end());
+        std::vector<int> Pf(this->nodes_with_filter[f].begin(), this->nodes_with_filter[f].end());
 
-        while (Rf.size() < threshold) {
-            int rand_index = rand() % this->nodes_with_filter[f].size();
-            Rf.insert(setVector[rand_index]);
+        if (Pf.size() <= threshold) {
+            for (int i = 0; i < Pf.size(); i++)
+                Rf.insert(Pf[i]);
+        } else {
+            while (Rf.size() < threshold) {
+                int rand_index = rand() % Pf.size();
+                Rf.insert(Pf[rand_index]);
+            }
         }
 
         int min_count = 1e6;
@@ -255,6 +264,8 @@ unordered_map<float, int> graph<T>::findMedoids(const int threshold) {
         m[f] = min_node_id;
         t[min_node_id] += 1;
     }
+
+    this->medoids = m;
     return m;
 }
 
@@ -352,8 +363,9 @@ void graph<T>::loadGraphFromFile(const string &file_name) {
         ifs.read(reinterpret_cast<char *>(&num_filters), sizeof(int));
 
         // Read filters.
-        vector<float> filters(num_filters);
-        ifs.read(reinterpret_cast<char *>(filters.data()), num_filters * sizeof(float));
+        vector<float> temp_filters(num_filters);
+        ifs.read(reinterpret_cast<char *>(temp_filters.data()), num_filters * sizeof(float));
+        set<float> filters(temp_filters.begin(), temp_filters.end());
 
         // Read vector components.
         vector<float> components(num_components);
@@ -361,7 +373,6 @@ void graph<T>::loadGraphFromFile(const string &file_name) {
 
         // Create new node.
         auto *new_node = new vector_node<T>(i, components, filters);
-        // auto *new_node = new vector_node<T>(i, components);
         this->nodes[i] = new_node;
     }
 
@@ -370,8 +381,13 @@ void graph<T>::loadGraphFromFile(const string &file_name) {
 }
 
 template <typename T>
-unordered_set<int> graph<T>::getNodesWithFilter(const float filter) const {
+unordered_set<int> graph<T>::getNodesWithFilter(const float filter) {
     return this->nodes_with_filter[filter];
+}
+
+template <typename T>
+unordered_map<float, int> graph<T>::getMedoids() const {
+    return this->medoids;
 }
 
 #endif //GRAPH_VECTOR_H

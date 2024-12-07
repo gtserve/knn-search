@@ -34,7 +34,7 @@ struct PairHash
 
 vector<int> randomPermutation(const int N);
 
-float recall(const unordered_set<int> &X, const std::unordered_set<int> &T);
+float recall(const std::set<int> &X, const std::set<int> &T);
 
 std::string getCurrentTimestamp();
 
@@ -91,7 +91,8 @@ int medoid(const vector<vector<T>> &vectors) {
             // Distance with self is zero.
             distance += sqrt(squared_euclidean_distance(vectors[i], vectors[j]));
             //cout << "distance is : " << sqrt(squared_euclidean_distance(vectors[i], vectors[j])) << endl;
-            if (distance > min_distance) break;
+            if (distance > min_distance)
+                break;
 
         }
         if (distance < min_distance) {

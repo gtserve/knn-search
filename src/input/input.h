@@ -13,6 +13,9 @@
 
 #include <iostream>
 #include <fstream>
+#include <iosfwd>
+#include <set>
+#include <vector>
 #include <vector>
 
 
@@ -21,7 +24,7 @@ void readSigmodVectors(
     int vec_dimension,
     bool queries,
     std::vector<std::vector<float> > &data,
-    std::vector<std::vector<float> > &filters
+    std::vector<std::set<float>> &filters
 );
 
 void generateSigmodGroundTruthFile(
