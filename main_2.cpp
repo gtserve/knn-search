@@ -129,7 +129,7 @@ int main(int argc, char *argv[]) {
 
         auto greedy_start = std::chrono::high_resolution_clock::now();
 
-        pair<set<int>, set<int> > greedy_result;
+        pair<set<int>, unordered_set<int> > greedy_result;
         greedy_result = filtered_greedy_graph_search(
             &G, S, i, query_vectors[i], opt.k, opt.L, Fq, false
         );
@@ -138,7 +138,7 @@ int main(int argc, char *argv[]) {
         cout << "Run Greedy! [Time: " << greedy_duration.count() << "ms ]  ";
 
         set<int> L = greedy_result.first;
-        set<int> V = greedy_result.second;
+        unordered_set<int> V = greedy_result.second;
 
         set<int> T;
         for (const int &j: gt_vectors[i])
