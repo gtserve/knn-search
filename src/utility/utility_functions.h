@@ -82,6 +82,11 @@ int medoid(const vector<vector<T>> &vectors) {
         return -1;
     }
 
+    if (vectors.size() == 1) {
+        cerr << "[ERROR]: Attempt to find medoid in dataset with 1 vector!" << endl;
+        return -1;
+    }
+
     long double min_distance = numeric_limits<double>::max();
     int medoid_id = 0;
     int num_vectors = vectors.size();

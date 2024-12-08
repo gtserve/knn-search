@@ -62,7 +62,6 @@ public:
 
     void clearNeighbours(int id);
 
-
     //testing new unordered map for storing distances
     long double getDistance(int x, int y);
 
@@ -81,6 +80,10 @@ public:
     unordered_set<int> getNodesWithFilter(const float filter);
 
     unordered_map<float, int> getMedoids() const;
+
+    set<float> getAllFilters() const;
+
+    void addMedoid(const float filter, const int id);
 };
 
 //initialize graph
@@ -129,10 +132,13 @@ graph<T>::~graph() {
 
 template<typename T>
 void graph<T>::generate_random_graph(const int R) {
-    srand(time(NULL));
+    if (this->nodes.size() == 1)
+        return;
 
+    srand(time(NULL));
     for (int i = 0; i < this->nodes.size(); i++) {
-        while (this->neighbours[i].size() < 2) {
+        int max_neighbours = min(this->getNumNodes() - 1, R);
+        while (this->neighbours[i].size() < max_neighbours) {
             //find random node in graph to be connected to i
             int cur_neighbor = rand() % this->nodes.size();
             if (cur_neighbor != i)
@@ -388,6 +394,16 @@ unordered_set<int> graph<T>::getNodesWithFilter(const float filter) {
 template <typename T>
 unordered_map<float, int> graph<T>::getMedoids() const {
     return this->medoids;
+}
+
+template <typename T>
+set<float> graph<T>::getAllFilters() const {
+    return this->total_filters;
+}
+
+template <typename T>
+void graph<T>::addMedoid(const float filter, const int id) {
+    this->medoids[filter] = id;
 }
 
 #endif //GRAPH_VECTOR_H

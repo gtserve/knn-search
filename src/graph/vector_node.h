@@ -78,9 +78,4 @@ set<float> vector_node<T>::getFilters() const {
     return this->data_vector->getFilters();
 }
 
-template <typename T>
-void vector_node<T>::addFilter(const float &filter) {
-    this->data_vector->addFilter(filter);
-}
-
 #endif //VECTOR_NODE_H
