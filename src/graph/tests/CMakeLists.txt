@@ -10,6 +10,7 @@ target_link_libraries(
         test_graph
         GTest::gtest_main
         graph_library
+        util_library
 )
 
 add_test(NAME TestGraph COMMAND test_graph)

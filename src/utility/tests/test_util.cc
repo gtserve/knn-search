@@ -2,6 +2,7 @@
 #include <utility_functions.h>
 #include <algorithm>
 #include <input.h>
+#include <unordered_set>
 
 TEST(TestUtil, RandomPermutation) {
     vector<int> v = randomPermutation(10);

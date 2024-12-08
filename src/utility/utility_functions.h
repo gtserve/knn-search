@@ -10,8 +10,10 @@
 #include <cmath>
 #include <vector>
 #include <algorithm>
+#include <map>
 #include <set>
 #include <unordered_map>
+#include <unordered_set>
 
 using namespace std;
 
@@ -32,7 +34,9 @@ struct PairHash
 
 vector<int> randomPermutation(const int N);
 
-float recall(const set<int> &X, const set<int> &T);
+float recall(const std::set<int> &X, const std::set<int> &T);
+
+std::string getCurrentTimestamp();
 
 // function to calculate euclidean distance between two vertices. Vertices may have many instances
 template<typename T>
@@ -78,6 +82,11 @@ int medoid(const vector<vector<T>> &vectors) {
         return -1;
     }
 
+    if (vectors.size() == 1) {
+        cerr << "[ERROR]: Attempt to find medoid in dataset with 1 vector!" << endl;
+        return -1;
+    }
+
     long double min_distance = numeric_limits<double>::max();
     int medoid_id = 0;
     int num_vectors = vectors.size();
@@ -87,7 +96,8 @@ int medoid(const vector<vector<T>> &vectors) {
             // Distance with self is zero.
             distance += sqrt(squared_euclidean_distance(vectors[i], vectors[j]));
             //cout << "distance is : " << sqrt(squared_euclidean_distance(vectors[i], vectors[j])) << endl;
-            if (distance > min_distance) break;
+            if (distance > min_distance)
+                break;
 
         }
         if (distance < min_distance) {

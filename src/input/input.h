@@ -13,10 +13,28 @@
 
 #include <iostream>
 #include <fstream>
+#include <iosfwd>
+#include <set>
+#include <vector>
 #include <vector>
 
 
-void readSigmodVectors(const std::string &file_path, int num_attributes, int vec_dimension, bool queries, std::vector<std::vector<float> > &data);
+void readSigmodVectors(
+    const std::string &file_path,
+    int vec_dimension,
+    bool queries,
+    std::vector<std::vector<float> > &data,
+    std::vector<std::set<float>> &filters
+);
+
+void generateSigmodGroundTruthFile(
+    const std::string &data_file,
+    const std::string &queries_file,
+    const std::string &out_file,
+    const int K_max
+);
+
+void readSigmodGroundTruth(const std::string &file_name, std::vector<std::vector<int> > &ground_truth);
 
 template<typename T>
 void readTexmexVectors(const std::string &file_name, std::vector<std::vector<T> > &vectors) {

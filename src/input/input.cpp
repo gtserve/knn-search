@@ -14,16 +14,20 @@
 #include <fstream>
 #include <vector>
 #include <cstdint>
+#include <unordered_map>
+#include <unordered_set>
+
+#include <utility_functions.h>
 
 using namespace std;
 
 
 void readSigmodVectors(
     const string &file_path,
-    const int num_attributes,
     const int vec_dimension,
     const bool queries,
-    vector<std::vector<float> > &data
+    vector<vector<float> > &vectors,
+    vector<set<float>> &filters
 ) {
     std::cout << "Reading Data from: " << file_path << std::endl;
     std::ifstream ifs(file_path, std::ios::binary);
@@ -38,24 +42,151 @@ void readSigmodVectors(
     ifs.read(reinterpret_cast<char *>(&N), sizeof(uint32_t));
     std::cout << "Reading " << N << " vectors ... " << std::endl;
 
-    data.resize(N);
-    for (auto &row: data)
-        row.resize(vec_dimension + num_attributes);
+    vectors.reserve(N);
+    filters.reserve(N);
 
-    // Read vectors.
-    for (int i = 0; i < N; i++)
-        ifs.read(reinterpret_cast<char *>(data[i].data()), (vec_dimension + num_attributes) * sizeof(float));
+    for (int i = 0; i < N; i++) {
+        if (queries) {
+            float query_type;
+            ifs.read(reinterpret_cast<char *>(&query_type), sizeof(float));
 
-    if (queries) {
-        // Erase queries of type 2 and 3.
-        for (auto it = data.begin(); it != data.end();) {
-            if ((*it)[0] == 2 || (*it)[0] == 3)
-                it = data.erase(it);
-            else
-                ++it;
+            if (query_type == 2 || query_type == 3) {
+                ifs.seekg(sizeof(float) * (vec_dimension + 3), ifs.cur);
+                continue;
+            }
+
+            if (query_type == 0) {
+                ifs.seekg(sizeof(float) * 3, ifs.cur);
+                set<float> fs = {-1};
+                filters.push_back(fs);
+            }
+
+            if (query_type == 1) {
+                float temp;
+                ifs.read(reinterpret_cast<char *>(&temp), sizeof(float));
+                set<float> fs = {temp};
+                filters.push_back(fs);
+                ifs.seekg(sizeof(float) * 2, ifs.cur);
+            }
+        } else {
+            // Read filter.
+            float temp;
+            ifs.read(reinterpret_cast<char *>(&temp), sizeof(float));
+            set<float> fs = {temp};
+            filters.push_back(fs);
+            // Ignore timestamp.
+            ifs.seekg(sizeof(float), ifs.cur);
         }
+
+        // Read vector.
+        vector<float> temp(vec_dimension);
+        ifs.read(reinterpret_cast<char *>(temp.data()), vec_dimension * sizeof(float));
+        vectors.push_back(temp);
     }
 
     ifs.close();
     std::cout << "Done!" << std::endl;
+}
+
+void generateSigmodGroundTruthFile(
+    const string &data_file,
+    const string &queries_file,
+    const string &out_file,
+    const int K_max
+) {
+    vector<vector<float> > data_vectors;
+    vector<set<float> > data_filters;
+    readSigmodVectors(
+        data_file,
+        100,
+        false,
+        data_vectors,
+        data_filters
+    );
+
+    vector<vector<float> > query_vectors;
+    vector<set<float> > query_filters;
+    readSigmodVectors(
+        queries_file,
+        100,
+        true,
+        query_vectors,
+        query_filters
+    );
+
+    unordered_map<float, unordered_set<int> > nodes_with_filter;
+    for (int i = 0; i < data_vectors.size(); i++) {
+        for (const auto &f: data_filters[i]) {
+            nodes_with_filter[f].insert(i);
+        }
+    }
+
+    ofstream ofs(out_file, ios::binary);
+
+    if (!ofs.is_open()) {
+        std::cerr << "[ERROR]: Opening file: '" << out_file << "'" << std::endl;
+        return;
+    }
+
+    // Save number of queries.
+    int num_queries = query_vectors.size();
+    ofs.write(reinterpret_cast<char *>(&num_queries), sizeof(int));
+
+    for (int i = 0; i < query_vectors.size(); ++i) {
+        vector<pair<long double, int> > distances;
+        unordered_set<int> matching_vectors;
+
+        float qf = *(query_filters[i].begin());     // Only one filter per query.
+        if (qf == -1) {
+            // Unfiltered search.
+            for (int j = 0; j < data_vectors.size(); j++)
+                matching_vectors.insert(j);
+        } else {
+            // Filtered search.
+            matching_vectors = nodes_with_filter[qf];
+        }
+
+        for (const auto &node_id: matching_vectors) {
+            long double distance = squared_euclidean_distance(data_vectors[node_id], query_vectors[i]);
+            distances.push_back({distance, node_id});
+        }
+
+        int num_neighbours = distances.size();
+        int k_nearest = min(num_neighbours, K_max);
+
+        nth_element(distances.begin(), distances.begin() + k_nearest, distances.end());
+
+        // Save number of k-nearest neighbors.
+        ofs.write(reinterpret_cast<char *>(&k_nearest), sizeof(int));
+
+        for (int j = 0; j < k_nearest; ++j)
+            ofs.write(reinterpret_cast<char *>(&distances[j].second), sizeof(int));
+    }
+
+    ofs.close();
+}
+
+void readSigmodGroundTruth(const string &file_name, vector<vector<int> > &ground_truth) {
+    std::ifstream ifs(file_name, std::ios::binary);
+
+    if (!ifs.is_open()) {
+        std::cerr << "[ERROR]: Opening file: '" << file_name << "'" << std::endl;
+        return;
+    }
+
+    // Save number of queries.
+    int num_queries;
+    ifs.read(reinterpret_cast<char *>(&num_queries), sizeof(int));
+
+    ground_truth.resize(num_queries);
+
+    for (int i = 0; i < num_queries; i++) {
+        // Read number of k-nearest neighbors.
+        int K;
+        ifs.read(reinterpret_cast<char *>(&K), sizeof(int));
+        ground_truth[i].resize(K);
+        ifs.read(reinterpret_cast<char *>(ground_truth[i].data()), K * sizeof(int));
+    }
+
+    ifs.close();
 }

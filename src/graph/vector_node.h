@@ -6,7 +6,6 @@
 #define VECTOR_NODE_H
 
 #include <vector>
-#include <unordered_set>
 #include <data_vector.h>
 
 
@@ -16,29 +15,36 @@ private:
     int node_id;
     DataVector<T> *data_vector;
 
-    //list of filters of current node
-    unordered_set<int> F;
-
 public:
-    vector_node(const int node_id, vector<T> components); //create node
+    vector_node(const int node_id, const vector<T> &components); //create node
+
+    vector_node(const int node_id, const vector<T> &components, const set<float> &filters); //create node
 
     ~vector_node();
 
-    int get_node_id();
+    int get_node_id() const;
 
-    DataVector<T>* get_coordinates();
+    vector<T> getComponents() const;
 
-    double getDistance(vector_node<T>* other);
+    double getDistance(vector_node<T>* other) const;
 
-    double getDistance(vector<T> &other);
+    double getDistance(vector<T> &other) const;
 
-    unordered_set<int> get_node_filters();
+    set<float> getFilters() const;
+
+    void addFilter(const float &filter);
 };
 
 template<typename T>
-vector_node<T>::vector_node(const int node_id, vector<T> components) {
+vector_node<T>::vector_node(const int node_id, const vector<T> &components) {
     this->node_id = node_id;
     this->data_vector = new DataVector<T>(components);
+}
+
+template<typename T>
+vector_node<T>::vector_node(const int node_id, const vector<T> &components, const set<float> &filters) {
+    this->node_id = node_id;
+    this->data_vector = new DataVector<T>(components, filters);
 }
 
 template<typename T>
@@ -47,32 +53,29 @@ vector_node<T>::~vector_node() {
 }
 
 template<typename T>
-int vector_node<T>::vector_node::get_node_id() {
+int vector_node<T>::vector_node::get_node_id() const {
     return this->node_id;
 }
 
 template <typename T>
-DataVector<T>* vector_node<T>::vector_node::get_coordinates()
-{
-    return this->data_vector;
+vector<T> vector_node<T>::vector_node::getComponents() const {
+    return this->data_vector->getComponents();
 }
 
 template<typename T>
-double vector_node<T>::getDistance(vector_node<T> *other) {
-    return this->data_vector->getDistance(other->get_coordinates());
+double vector_node<T>::getDistance(vector_node<T> *other) const {
+    vector<T> other_comp = other->getComponents();
+    return this->data_vector->getDistance(other_comp);
 }
 
 template<typename T>
-double vector_node<T>::getDistance(vector<T> &other) {
+double vector_node<T>::getDistance(vector<T> &other) const {
     return this->data_vector->getDistance(other);
 }
 
-
 template<typename T>
-unordered_set<int> vector_node<T>::get_node_filters()
-{
-    return this->F;
+set<float> vector_node<T>::getFilters() const {
+    return this->data_vector->getFilters();
 }
-
 
 #endif //VECTOR_NODE_H

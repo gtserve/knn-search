@@ -8,8 +8,9 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
-#include <set>
 #include <unordered_set>
+#include <chrono>
+#include <iomanip>
 
 using namespace std;
 
@@ -34,17 +35,28 @@ vector<int> randomPermutation(const int N) {
 }
 
 float recall(const set<int> &X, const set<int> &T) {
+    if (X.empty())
+        return 0;
+
     set<int> I;
     set_intersection(
         X.begin(), X.end(),
         T.begin(), T.end(),
         inserter(I, I.begin()));
 
-
-    //cout << "I[" << I.size() << "]: ";
-    //for (const int &id: I) cout << id << " ";
-    //cout << endl;
-
-
     return static_cast<float> (I.size()) / static_cast<float> (X.size());
+}
+
+std::string getCurrentTimestamp() {
+    auto now = std::chrono::system_clock::now();
+    auto time_t_now = std::chrono::system_clock::to_time_t(now);
+
+    // Convert to local time
+    std::tm local_time;
+    localtime_r(&time_t_now, &local_time);
+
+    // Format time into a string
+    std::ostringstream timestamp;
+    timestamp << std::put_time(&local_time, "%H-%M-%S");
+    return timestamp.str();
 }
