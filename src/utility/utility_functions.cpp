@@ -35,6 +35,9 @@ vector<int> randomPermutation(const int N) {
 }
 
 float recall(const set<int> &X, const set<int> &T) {
+    if (X.empty())
+        return 0;
+
     set<int> I;
     set_intersection(
         X.begin(), X.end(),
