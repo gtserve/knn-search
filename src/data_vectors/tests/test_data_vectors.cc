@@ -30,7 +30,7 @@ TEST(TestDataVector, TestDistanceFromVector) {
 
   DataVector<int> dv1(v1);
 
-  EXPECT_EQ(dv1.getDistance(v2), sqrt(2));
+  EXPECT_EQ(dv1.getDistance(v2), 2);
 }
 
 TEST(TestDataVector, TestDistanceFromDataVector) {
@@ -40,7 +40,7 @@ TEST(TestDataVector, TestDistanceFromDataVector) {
   DataVector<int> dv1(v1);
   DataVector<int> dv2(v2);
 
-  EXPECT_EQ(dv1.getDistance(&dv2), sqrt(2));
+  EXPECT_EQ(dv1.getDistance(&dv2), 2);
 }
 
 TEST(TestDataVector, Filters) {
