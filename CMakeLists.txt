@@ -59,5 +59,26 @@ target_link_libraries(
         vamana_library
 )
 
+add_executable(index_vamana index_vamana.cpp)
+
+target_link_libraries(
+        index_vamana
+        input_library
+        util_library
+        data_vector_library
+        graph_library
+        vamana_library
+)
+
+add_executable(query_index query_index.cpp)
+target_link_libraries(
+        query_index
+        input_library
+        util_library
+        data_vector_library
+        graph_library
+        vamana_library
+)
+
 set_target_properties(gtest PROPERTIES SYSTEM TRUE)
 set_target_properties(gmock PROPERTIES SYSTEM TRUE)
