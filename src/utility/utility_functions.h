@@ -14,6 +14,7 @@
 #include <set>
 #include <unordered_map>
 #include <unordered_set>
+#include <omp.h>
 
 using namespace std;
 
@@ -47,6 +48,7 @@ long double euclidean_distance(const vector<T> &parent_instances, const vector<T
     }
 
     long double d = 0;
+#pragma omp parallel for reduction(+:d)
     for (int i = 0; i < parent_instances.size(); ++i) {
         d += static_cast<long double> (pow(abs(parent_instances[i] - new_instances[i]), 2));
     }

@@ -15,8 +15,8 @@
 using namespace std;
 
 typedef struct {
-    string data_path;
-    string output_path;
+    string data_file;
+    string output_dir;
     float a = 1.0;
     int L = 10;
     int R = 10;
@@ -52,10 +52,10 @@ int inputHandler(OptionsType &options, int argc, char *argv[]) {
                 usage();
                 return 0;
             case 'd': // --data or -d
-                options.data_path = optarg;
+                options.data_file = optarg;
                 break;
             case 'o': // --output or -o
-                options.output_path = optarg;
+                options.output_dir = optarg;
                 break;
             case 'a': // -a
                 options.a = atof(optarg);
@@ -84,23 +84,13 @@ int main(int argc, char *argv[]) {
     if (inputHandler(options, argc, argv) == -1)
         return -1;
 
-    // Read data.
-    cout << "Reading data from '" << options.data_path << "' ...\n";
+    cout << "Reading data from '" << options.data_file << "' ...\n";
     auto data_start = chrono::high_resolution_clock::now();
     vector<vector<float> > data;
-    readTexmexVectors(options.data_path, data);
+    readTexmexVectors(options.data_file, data);
     auto data_end = chrono::high_resolution_clock::now();
     auto data_duration = chrono::duration_cast<chrono::milliseconds>(data_end - data_start);
     cout << "Done! Read " << data.size() << " vectors. [Time: " << data_duration.count() << "ms ]\n";
-
-    // #DEBUG
-    // for (int i = 0; i < 10; i++) {
-    //     cout << i << ": ";
-    //     for (const float &x: data[i])
-    //         cout << x << ", ";
-    //     cout << "\b\b" << endl;
-    // }
-    // cout << endl;
 
     graph<float> G(data, options.R);
 
@@ -118,15 +108,16 @@ int main(int argc, char *argv[]) {
     auto vamana_duration = chrono::duration_cast<chrono::seconds>(vamana_end - vamana_start);
     cout << "Done! [Time: " << vamana_duration.count() << "s ]\n";
 
+    G.addMedoid(-1, medoid_id);
+
     cout << "Saving index ...\n";
     auto save_start = chrono::high_resolution_clock::now();
-    G.saveGraphToDir(options.output_path);
+    string index_path = G.saveGraphToDir("", options.output_dir);
     auto save_end = chrono::high_resolution_clock::now();
     auto save_duration = chrono::duration_cast<chrono::milliseconds>(save_end - save_start);
     cout << "Done! [Time: " << save_duration.count() << "ms ]\n";
 
     auto time_end = chrono::high_resolution_clock::now();
-
     auto duration = chrono::duration_cast<chrono::minutes>(time_end - time_start);
     cout << "[Total Time: " << duration.count() << "m ]\n";
 

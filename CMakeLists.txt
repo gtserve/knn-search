@@ -3,6 +3,8 @@ project(k23a_project)
 
 set(CMAKE_CXX_STANDARD 17)
 
+find_package(OpenMP REQUIRED)
+
 include(FetchContent)
 FetchContent_Declare(
         googletest
@@ -57,6 +59,7 @@ target_link_libraries(
         data_vector_library
         graph_library
         vamana_library
+        OpenMP::OpenMP_CXX
 )
 
 add_executable(index_vamana index_vamana.cpp)

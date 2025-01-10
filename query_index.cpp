@@ -19,7 +19,6 @@ typedef struct {
     string index_path;
     string queries_path;
     string gt_path;
-    int s = 1.0;
     int k = 10;
     int L = 10;
 } OptionsType;
@@ -34,7 +33,6 @@ void usage() {
     std::cout << "  --index, -i [FILE_PATH]    Specify path to index binary file.\n";
     std::cout << "  --queries, -q [FILE_PATH]  Specify path to queries data set.\n";
     std::cout << "  --gtruth, -g [FILE_PATH]   Specify path to ground truth data set.\n";
-    std::cout << "  -s [INTEGER]               Specify parameter 's' for: GreedySearch.\n";
     std::cout << "  -k [INTEGER]               Specify parameter 'k' for: GreedySearch.\n";
     std::cout << "  -L [INTEGER]               Specify parameter 'L' for: GreedySearch.\n";
 }
@@ -63,9 +61,6 @@ int inputHandler(OptionsType &options, int argc, char *argv[]) {
                 break;
             case 'g': // --gtruth or -g
                 options.gt_path = optarg;
-                break;
-            case 's': // -s
-                options.s = atof(optarg);
                 break;
             case 'k': // -k
                 options.k = atoi(optarg);
@@ -100,7 +95,7 @@ int main(int argc, char *argv[]) {
     auto dq_duration = chrono::duration_cast<chrono::milliseconds>(dq_end - dq_start);
     cout << "Done! Read " << query_vectors.size() << " vectors. [Time: " << dq_duration.count() << "ms ]\n";
 
-    // Read Queries.
+    // Read GroundTruth.
     cout << "Reading Queries from '" << options.queries_path << "' ...\n";
     auto dgt_start = chrono::high_resolution_clock::now();
     vector<vector<int> > gt_vectors;
@@ -110,6 +105,7 @@ int main(int argc, char *argv[]) {
     cout << "Done! Read " << gt_vectors.size() << " vectors. [Time: " << dgt_duration.count() << "ms ]\n";
 
     graph<float> G(options.index_path);
+    int medoid_id = G.getMedoid(-1);
 
     float total_recall = 0.0;
 
@@ -120,7 +116,7 @@ int main(int argc, char *argv[]) {
 
         pair<set<int>, unordered_set<int> > greedy_result;
         greedy_result = greedy_graph_search(
-            &G, options.s, i, query_vectors[i], options.k, options.L, false
+            &G, medoid_id, i, query_vectors[i], options.k, options.L, false
         );
 
         auto greedy_end = std::chrono::high_resolution_clock::now();
