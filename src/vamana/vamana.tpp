@@ -11,6 +11,7 @@
 #include <data_vector.h>
 #include <queue>
 #include <unordered_map>
+#include <omp.h>
 
 
 template<typename T>
@@ -404,24 +405,31 @@ void filteredVamana(
 template<typename T>
 void stitchedVamana(
     graph<T> *G,
-    const int a,
+    const float a,
     const int L_small,
     const int R_small,
     const int R
 ) {
     unordered_map<float, vector<int> > id_map;
     set<float> all_filters = G->getAllFilters();
-    for (const auto &f: all_filters) {
+    vector<graph<T> *> graphs;
+    vector<float> graph_filters;
 
-        unordered_set<int> Pf = G->get_nodes_for_filter(f);
+    vector<float> vec_filters;
+    for (const auto f: all_filters)
+        vec_filters.push_back(f);
+
+    for (int i = 0; i < vec_filters.size(); i++) {
+
+        unordered_set<int> Pf = G->get_nodes_for_filter(vec_filters[i]);
 
         if (Pf.empty() || Pf.size() == 1)
             continue;
 
-        id_map[f].reserve(Pf.size());
+        id_map[vec_filters[i]].reserve(Pf.size());
 
         for (const auto &id: Pf)
-            id_map[f].push_back(id);
+            id_map[vec_filters[i]].push_back(id);
 
         vector<vector<T> > DS_f;
         DS_f.reserve(Pf.size());
@@ -431,7 +439,7 @@ void stitchedVamana(
             DS_f.push_back(components);
         }
 
-        graph<T> Gf(DS_f, R_small);
+        graph<T> *Gf = new graph<float>(DS_f, vec_filters[i], R_small);
 
         auto medoid_start = std::chrono::high_resolution_clock::now();
         int medoid_id = medoid(DS_f);
@@ -439,19 +447,24 @@ void stitchedVamana(
         auto medoid_duration = std::chrono::duration_cast<std::chrono::milliseconds>(medoid_end - medoid_start);
         cout << "Calculated Medoid: " << medoid_id << " [Time: " << medoid_duration.count() << "ms ]" << endl;
 
-        G->addMedoid(f, id_map[f][medoid_id]);
+        G->addMedoid(vec_filters[i], id_map[vec_filters[i]][medoid_id]);
 
         auto vamana_start = std::chrono::high_resolution_clock::now();
-        vamana(&Gf, DS_f, medoid_id, a, L_small, R_small);
+        vamana(Gf, DS_f, medoid_id, a, L_small, R_small);
         auto vamana_end = std::chrono::high_resolution_clock::now();
         auto vamana_duration = std::chrono::duration_cast<std::chrono::milliseconds>(vamana_end - vamana_start);
         cout << "Run Vamana! [Time: " << vamana_duration.count() << "ms ]" << endl;
 
-        // Stitch
-        for (int i = 0; i < DS_f.size(); i++) {
-            unordered_set<int> N_out = Gf.getNodeNeighbours(i);
+        graph_filters.push_back(vec_filters[i]);
+        graphs.push_back(Gf);
+    }
+
+    // Stitch
+    for (int i = 0; i < graphs.size(); i++) {
+        for (int j = 0; j < graphs[i]->getNumNodes(); j++) {
+            unordered_set<int> N_out = graphs[i]->getNodeNeighbours(j);
             for (const auto &neighbour_id: N_out)
-                G->addEdgeDirected(id_map[f][i], neighbour_id);
+                G->addEdgeDirected(id_map[graph_filters[i]][j], id_map[graph_filters[i]][neighbour_id]);
         }
     }
 
@@ -459,6 +472,9 @@ void stitchedVamana(
         unordered_set<int> N_out = G->getNodeNeighbours(i);
         filteredRobustPrune(G, i, N_out, a, R);
     }
+
+    for (const auto g: graphs)
+        delete g;
 }
 
 

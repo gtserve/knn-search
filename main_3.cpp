@@ -181,8 +181,8 @@ int main(int argc, char *argv[]) {
     cout << "Average Recall (Total):      " << avg_total_recall << endl;
 
     auto time_end = chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::minutes>(time_end - time_start);
-    cout << "[Total Time: " << duration.count() << "m ]" << endl;
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(time_end - time_start);
+    cout << "[Total Time: " << duration.count() << "ms ]" << endl;
 
     return 0;
 }

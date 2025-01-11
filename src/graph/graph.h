@@ -40,6 +40,8 @@ public:
 
     graph(const vector<vector<T> > &vectors); //initialise graph
 
+    graph(const vector<vector<T> > &vectors, const float filter, const int R);
+
     graph(const vector<vector<T> > &vectors, const vector<set<float> > &filters, const int R); //initialise graph
 
     graph(const string &file_name);
@@ -73,7 +75,7 @@ public:
 
     unordered_map<float, int> findMedoids(const int threshold);
 
-    std::string saveGraphToDir(const string &dir_path);
+    std::string saveGraphToDir(const string &dir_path = "", const string &file_path = "");
 
     void loadGraphFromFile(const string &file_name);
 
@@ -84,6 +86,8 @@ public:
     set<float> getAllFilters() const;
 
     void addMedoid(const float filter, const int id);
+
+    int getMedoid(const float filter);
 };
 
 //initialize graph
@@ -102,6 +106,17 @@ graph<T>::graph(const vector<vector<T> > &vectors, const int R) {
         this->nodes.push_back(new_node);
         neighbours[i].reserve(R);
     }
+}
+
+template<typename T>
+graph<T>::graph(const vector<vector<T> > &vectors, const float filter, const int R) {
+    for (int i = 0; i < vectors.size(); i++) {
+        auto *new_node = new vector_node<T>(i, vectors[i]);
+        this->nodes.push_back(new_node);
+        neighbours[i].reserve(R);
+    }
+
+    this->total_filters.insert(filter);
 }
 
 template<typename T>
@@ -276,10 +291,15 @@ unordered_map<float, int> graph<T>::findMedoids(const int threshold) {
 }
 
 template<typename T>
-std::string graph<T>::saveGraphToDir(const string &dir_path) {
+std::string graph<T>::saveGraphToDir(const string &dir_path, const string &file_path) {
     string timestamp = getCurrentTimestamp();
 
-    string file_name = dir_path + "/graph_" + timestamp + ".bin";
+    string file_name;
+    if (!dir_path.empty()) {
+        file_name = dir_path + "/graph_" + timestamp + ".bin";
+    } else {
+        file_name = file_path;
+    }
 
     if (this->nodes.empty()) {
         std::cerr << "[ERROR]: Attempt to save empty Graph!" << std::endl;
@@ -291,6 +311,18 @@ std::string graph<T>::saveGraphToDir(const string &dir_path) {
     if (!ofs.is_open()) {
         std::cerr << "[ERROR]: Opening file: '" << file_name << "'" << std::endl;
         return "";
+    }
+
+    // Save number of medoids.
+    int num_medoids = this->medoids.size();
+    ofs.write(reinterpret_cast<char *>(&num_medoids), sizeof(int));
+
+    // Save medoids.
+    for (const auto &pair: this->medoids) {
+        float filter = pair.first;
+        int medoid_id = pair.second;
+        ofs.write(reinterpret_cast<char *>(&filter), sizeof(float));
+        ofs.write(reinterpret_cast<char *>(&medoid_id), sizeof(int));
     }
 
     // Save number of nodes.
@@ -323,7 +355,7 @@ std::string graph<T>::saveGraphToDir(const string &dir_path) {
     }
 
     ofs.close();
-    cout << "Saved Graph to '" << file_name << "'" << endl;
+    // cout << "Saved Graph to '" << file_name << "'" << endl;
     return file_name;
 }
 
@@ -340,6 +372,19 @@ void graph<T>::loadGraphFromFile(const string &file_name) {
     if (!ifs.is_open()) {
         std::cerr << "[ERROR]: Opening file: '" << file_name << "'" << std::endl;
         return;
+    }
+
+    // Read number of medoids.
+    int num_medoids = this->medoids.size();
+    ifs.read(reinterpret_cast<char *>(&num_medoids), sizeof(int));
+
+    // Read medoids.
+    for (int i = 0; i < num_medoids; i++) {
+        float filter;
+        int medoid_id;
+        ifs.read(reinterpret_cast<char *>(&filter), sizeof(float));
+        ifs.read(reinterpret_cast<char *>(&medoid_id), sizeof(int));
+        this->addMedoid(filter, medoid_id);
     }
 
     // Read number of nodes.
@@ -404,6 +449,12 @@ set<float> graph<T>::getAllFilters() const {
 template <typename T>
 void graph<T>::addMedoid(const float filter, const int id) {
     this->medoids[filter] = id;
+}
+
+template <typename T>
+int graph<T>::getMedoid(const float filter) {
+    int medoid_id = this->medoids[filter];
+    return medoid_id;
 }
 
 #endif //GRAPH_VECTOR_H
