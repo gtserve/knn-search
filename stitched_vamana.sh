@@ -7,7 +7,7 @@ EXECUTABLES_DIR="./cmake-build-debug"
 DATASET_DIR="./data/sigmod"
 
 INDEX_DIR="./data/indexes"
-INDEX_FILE="$INDEX_DIR/index_fv_$TIMESTAMP.bin"
+INDEX_FILE="$INDEX_DIR/index_sv_$TIMESTAMP.bin"
 
 mkdir -p $INDEX_DIR
 
@@ -19,7 +19,7 @@ echo "Creating Index..."
     -a 1.2 \
     -l 120 \
     -r 32 \
-    -R 50
+    -R 64
 echo -e "\n"
 
 echo "Querying Index ..."
