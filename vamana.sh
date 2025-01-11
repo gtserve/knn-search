@@ -13,7 +13,7 @@ mkdir -p $INDEX_DIR
 
 echo "Creating Index..."
 /usr/bin/time -v \
-  "$EXECUTABLES_DIR/index_vamana" \
+  "$EXECUTABLES_DIR/index_v" \
     --data "$DATASET_DIR/siftsmall_base.fvecs" \
     --output "$INDEX_FILE" \
     -a 1.2 \
@@ -23,7 +23,7 @@ echo -e "\n"
 
 echo "Querying Index ..."
 /usr/bin/time -v \
-  "$EXECUTABLES_DIR/query_index" \
+  "$EXECUTABLES_DIR/query_index_v" \
     --index "$INDEX_FILE" \
     --queries "$DATASET_DIR/siftsmall_query.fvecs" \
     --gtruth "$DATASET_DIR/siftsmall_groundtruth.ivecs" \

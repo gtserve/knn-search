@@ -62,25 +62,49 @@ target_link_libraries(
         OpenMP::OpenMP_CXX
 )
 
-add_executable(index_vamana index_vamana.cpp)
+add_executable(index_v index_v.cpp)
 
 target_link_libraries(
-        index_vamana
+        index_v
         input_library
         util_library
         data_vector_library
         graph_library
         vamana_library
+        OpenMP::OpenMP_CXX
 )
 
-add_executable(query_index query_index.cpp)
+add_executable(query_index_v query_index_v.cpp)
 target_link_libraries(
-        query_index
+        query_index_v
         input_library
         util_library
         data_vector_library
         graph_library
         vamana_library
+        OpenMP::OpenMP_CXX
+)
+
+add_executable(index_fv index_fv.cpp)
+target_link_libraries(
+        index_fv
+        input_library
+        util_library
+        data_vector_library
+        graph_library
+        vamana_library
+        OpenMP::OpenMP_CXX
+)
+
+add_executable(query_index_fv query_index_fv.cpp)
+target_link_libraries(
+        query_index_fv
+        input_library
+        util_library
+        data_vector_library
+        graph_library
+        vamana_library
+        OpenMP::OpenMP_CXX
 )
 
 set_target_properties(gtest PROPERTIES SYSTEM TRUE)

@@ -405,7 +405,7 @@ void filteredVamana(
 template<typename T>
 void stitchedVamana(
     graph<T> *G,
-    const int a,
+    const float a,
     const int L_small,
     const int R_small,
     const int R
@@ -418,7 +418,7 @@ void stitchedVamana(
     for (const auto f: all_filters)
         vec_filters.push_back(f);
 
-#pragma omp parallel for
+// #pragma omp parallel for
     for (int i = 0; i < vec_filters.size(); i++) {
 
         unordered_set<int> Pf = G->get_nodes_for_filter(vec_filters[i]);
@@ -464,15 +464,15 @@ void stitchedVamana(
         //         G->addEdgeDirected(id_map[vec_filters[i]][j], neighbour_id);
         // }
 
-        // Stitch
-        for (int i = 0; i < DS_f.size(); i++) {
-            unordered_set<int> N_out = Gf.getNodeNeighbours(i);
-            for (const auto &neighbour_id: N_out)
-                G->addEdgeDirected(id_map[f][i], neighbour_id);
-        }
+        // // Stitch
+        // for (int i = 0; i < DS_f.size(); i++) {
+        //     unordered_set<int> N_out = Gf.getNodeNeighbours(i);
+        //     for (const auto &neighbour_id: N_out)
+        //         G->addEdgeDirected(id_map[f][i], neighbour_id);
+        // }
     }
 
-    // // Stitch
+    // Stitch
     for (const auto &pair: graphs) {
         float filter = pair.first;
         graph <T> *Gf = pair.second;
