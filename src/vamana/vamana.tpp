@@ -479,7 +479,7 @@ void stitchedVamana(
         for (int j = 0; j < Gf->getNumNodes(); j++) {
             unordered_set<int> N_out = Gf->getNodeNeighbours(j);
             for (const auto &neighbour_id: N_out)
-                G->addEdgeDirected(id_map[filter][j], neighbour_id);
+                G->addEdgeDirected(id_map[filter][j], id_map[filter][neighbour_id]);
         }
     }
 
