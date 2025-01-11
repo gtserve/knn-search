@@ -107,5 +107,27 @@ target_link_libraries(
         OpenMP::OpenMP_CXX
 )
 
+add_executable(index_sv index_sv.cpp)
+target_link_libraries(
+        index_sv
+        input_library
+        util_library
+        data_vector_library
+        graph_library
+        vamana_library
+        OpenMP::OpenMP_CXX
+)
+
+add_executable(query_index_sv query_index_sv.cpp)
+target_link_libraries(
+        query_index_sv
+        input_library
+        util_library
+        data_vector_library
+        graph_library
+        vamana_library
+        OpenMP::OpenMP_CXX
+)
+
 set_target_properties(gtest PROPERTIES SYSTEM TRUE)
 set_target_properties(gmock PROPERTIES SYSTEM TRUE)
