@@ -372,6 +372,7 @@ void filteredVamana(
     const int R,
     const int threshold
 ) {
+    G->generate_random_graph(R);
     unordered_map<float, int> st = G->findMedoids(threshold);
     vector<int> rand_sequence = randomPermutation(data_set.size());
     for (const int i: rand_sequence) {
@@ -410,6 +411,7 @@ void stitchedVamana(
     const int R_small,
     const int R
 ) {
+    G->generate_random_graph(R);
     unordered_map<float, vector<int> > id_map;
     set<float> all_filters = G->getAllFilters();
     vector<graph<T> *> graphs;
