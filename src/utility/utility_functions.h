@@ -91,23 +91,22 @@ int medoid(const vector<vector<T>> &vectors) {
 
     long double min_distance = numeric_limits<double>::max();
     int medoid_id = 0;
-    int num_vectors = vectors.size();
-    for (int i = 0; i < num_vectors; i++) {
-        long double distance = 0.0;
-        for (int j = 0; j < vectors.size(); j++) {
-            // Distance with self is zero.
-            distance += sqrt(squared_euclidean_distance(vectors[i], vectors[j]));
-            //cout << "distance is : " << sqrt(squared_euclidean_distance(vectors[i], vectors[j])) << endl;
-            if (distance > min_distance)
-                break;
 
+    for (int i = 0; i < vectors.size(); i++) {
+        long double distance = 0.0;
+
+        for (int j = 0; j < vectors.size(); j++) {
+            distance += euclidean_distance(vectors[i], vectors[j]);
+            // if (distance > min_distance)
+            //     break;
         }
+
         if (distance < min_distance) {
             min_distance = distance;
             medoid_id = i;
         }
     }
-    //cout << "Medoid ID: " << medoid_id << "With distance: " << min_distance << endl;
+
     return medoid_id;
 }
 
