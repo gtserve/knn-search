@@ -229,12 +229,12 @@ long double graph<T>::getDistance(const int x, const int y, const double min_dis
     int b = max(x, y);
 
     long double dist = 0.0;
-    // dist = distances_map[{a, b}];
+    dist = distances_map[{a, b}];
     if (dist == 0.0) {
         vector_node<T> *Na = this->get_node(a);
         vector_node<T> *Nb = this->get_node(b);
         dist = Na->getDistance(Nb, min_dist);
-        // distances_map[{a, b}] = dist;
+        distances_map[{a, b}] = dist;
     }
     return dist;
 }
