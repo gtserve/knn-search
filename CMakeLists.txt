@@ -3,8 +3,6 @@ project(k23a_project)
 
 set(CMAKE_CXX_STANDARD 17)
 
-find_package(OpenMP REQUIRED)
-
 include(FetchContent)
 FetchContent_Declare(
         googletest
@@ -59,7 +57,6 @@ target_link_libraries(
         data_vector_library
         graph_library
         vamana_library
-        OpenMP::OpenMP_CXX
 )
 
 add_executable(index_v index_v.cpp)
@@ -71,7 +68,6 @@ target_link_libraries(
         data_vector_library
         graph_library
         vamana_library
-        OpenMP::OpenMP_CXX
 )
 
 add_executable(query_index_v query_index_v.cpp)
@@ -82,7 +78,6 @@ target_link_libraries(
         data_vector_library
         graph_library
         vamana_library
-        OpenMP::OpenMP_CXX
 )
 
 add_executable(index_fv index_fv.cpp)
@@ -93,7 +88,6 @@ target_link_libraries(
         data_vector_library
         graph_library
         vamana_library
-        OpenMP::OpenMP_CXX
 )
 
 add_executable(query_index_fv query_index_fv.cpp)
@@ -104,7 +98,6 @@ target_link_libraries(
         data_vector_library
         graph_library
         vamana_library
-        OpenMP::OpenMP_CXX
 )
 
 add_executable(index_sv index_sv.cpp)
@@ -115,7 +108,6 @@ target_link_libraries(
         data_vector_library
         graph_library
         vamana_library
-        OpenMP::OpenMP_CXX
 )
 
 add_executable(query_index_sv query_index_sv.cpp)
@@ -126,7 +118,6 @@ target_link_libraries(
         data_vector_library
         graph_library
         vamana_library
-        OpenMP::OpenMP_CXX
 )
 
 set_target_properties(gtest PROPERTIES SYSTEM TRUE)
