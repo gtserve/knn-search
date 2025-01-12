@@ -49,7 +49,8 @@ long double euclidean_distance(const vector<T> &parent_instances, const vector<T
 
     long double d = 0;
     for (int i = 0; i < parent_instances.size(); ++i) {
-        d += static_cast<long double> (pow(abs(parent_instances[i] - new_instances[i]), 2));
+        long double diff = static_cast<long double>(parent_instances[i] - new_instances[i]);
+        d += diff * diff;
     }
 
     return sqrt(d);
