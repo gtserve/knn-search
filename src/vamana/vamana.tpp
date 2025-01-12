@@ -419,6 +419,7 @@ void stitchedVamana(
     for (const auto f: all_filters)
         vec_filters.push_back(f);
 
+#pragma omp parallel for
     for (int i = 0; i < vec_filters.size(); i++) {
 
         unordered_set<int> Pf = G->get_nodes_for_filter(vec_filters[i]);
