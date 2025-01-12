@@ -73,7 +73,6 @@ long double squared_euclidean_distance(
 
     long double d = 0.0;
 
-#pragma omp parallel for reduction(+:d)
     for (size_t i = 0; i < v1.size(); ++i) {
         long double diff = static_cast<long double>(v1[i] - v2[i]);
         d += diff * diff;
