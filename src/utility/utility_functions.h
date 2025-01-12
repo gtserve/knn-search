@@ -107,8 +107,8 @@ int medoid(const vector<vector<T> > &vectors) {
 
         for (int j = 0; j < vectors.size(); j++) {
             distance += squared_euclidean_distance(vectors[i], vectors[j]);
-            // if (distance > min_distance)
-            //     break;
+            if (distance > min_distance)
+                break;
         }
 
         if (distance < min_distance) {
