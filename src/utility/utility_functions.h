@@ -15,6 +15,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <omp.h>
+#include <random>
 
 using namespace std;
 
@@ -99,25 +100,33 @@ int medoid(const vector<vector<T> > &vectors) {
         return -1;
     }
 
-    long double min_distance = numeric_limits<double>::max();
-    int medoid_id = 0;
+    // Random number generator setup
+    std::random_device rd;  // Seed generator
+    std::mt19937 gen(rd()); // Mersenne Twister PRNG
+    std::uniform_int_distribution<> dis(0, vectors.size() - 1); // Uniform distribution for index
 
-    for (int i = 0; i < vectors.size(); i++) {
-        long double distance = 0.0;
+    // Generate a random index and get the corresponding value
+    int randomIndex = dis(gen);
 
-        for (int j = 0; j < vectors.size(); j++) {
-            distance += squared_euclidean_distance(vectors[i], vectors[j]);
-            if (distance > min_distance)
-                break;
-        }
+    // long double min_distance = numeric_limits<double>::max();
+    // int medoid_id = 0;
+    //
+    // for (int i = 0; i < vectors.size(); i++) {
+    //     long double distance = 0.0;
+    //
+    //     for (int j = 0; j < vectors.size(); j++) {
+    //         distance += squared_euclidean_distance(vectors[i], vectors[j]);
+    //         if (distance > min_distance)
+    //             break;
+    //     }
+    //
+    //     if (distance < min_distance) {
+    //         min_distance = distance;
+    //         medoid_id = i;
+    //     }
+    // }
 
-        if (distance < min_distance) {
-            min_distance = distance;
-            medoid_id = i;
-        }
-    }
-
-    return medoid_id;
+    return randomIndex;
 }
 
 #endif //UTILITY_FUNCTIONS_H
