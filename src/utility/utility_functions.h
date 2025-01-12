@@ -102,6 +102,8 @@ int medoid(const vector<vector<T> > &vectors) {
     long double min_distance = numeric_limits<double>::max();
     int medoid_id = 0;
 
+#pragma omp parallel for
+
     for (int i = 0; i < vectors.size(); i++) {
         long double distance = 0.0;
 
