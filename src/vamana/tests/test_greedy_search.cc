@@ -38,10 +38,10 @@ TEST(TestGreedySearch, LinearGraph) {
     EXPECT_TRUE(L.find(3) != L.end());
     EXPECT_TRUE(L.find(2) != L.end());
 
+    EXPECT_TRUE(V.find(0) != L.end());
     EXPECT_TRUE(V.find(1) != L.end());
     EXPECT_TRUE(V.find(2) != L.end());
     EXPECT_TRUE(V.find(3) != L.end());
-    EXPECT_TRUE(V.find(4) != L.end());
 }
 
 TEST(TestGreedySearch, TwoWayLinearGraph) {
@@ -82,10 +82,10 @@ TEST(TestGreedySearch, TwoWayLinearGraph) {
     EXPECT_TRUE(L.find(1) != L.end());
     EXPECT_TRUE(L.find(2) != L.end());
 
+    EXPECT_TRUE(V.find(0) != L.end());
     EXPECT_TRUE(V.find(1) != L.end());
     EXPECT_TRUE(V.find(2) != L.end());
     EXPECT_TRUE(V.find(3) != L.end());
-    EXPECT_TRUE(V.find(4) != L.end());
 }
 
 TEST(TestGreedySearch, QueryNotInGraph) {
@@ -124,10 +124,9 @@ TEST(TestGreedySearch, QueryNotInGraph) {
     EXPECT_TRUE(L.find(1) != L.end());
     EXPECT_TRUE(L.find(2) != L.end());
 
+    EXPECT_TRUE(V.find(0) != L.end());
     EXPECT_TRUE(V.find(1) != L.end());
     EXPECT_TRUE(V.find(2) != L.end());
-    EXPECT_TRUE(V.find(3) != L.end());
-    EXPECT_TRUE(V.find(4) != L.end());
 }
 
 TEST(TestGreedySearch, SparseGraph) {
@@ -169,8 +168,8 @@ TEST(TestGreedySearch, SparseGraph) {
     EXPECT_TRUE(L.find(2) != L.end());
     EXPECT_TRUE(L.find(3) != L.end());
 
+    EXPECT_TRUE(V.find(0) != L.end());
     EXPECT_TRUE(V.find(1) != L.end());
     EXPECT_TRUE(V.find(2) != L.end());
     EXPECT_TRUE(V.find(3) != L.end());
-    EXPECT_TRUE(V.find(4) != L.end());
 }
