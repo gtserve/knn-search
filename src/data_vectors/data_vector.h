@@ -32,9 +32,9 @@ public:
 
     std::set<float> getFilters() const;
 
-    double getDistance(DataVector<T> *other) const;
+    double getDistance(DataVector<T> *other, double min_dist = 0.0) const;
 
-    double getDistance(vector<T> &other) const;
+    double getDistance(vector<T> &other, double min_dist = 0.0) const;
 
     void print();
 
@@ -67,13 +67,13 @@ std::set<float> DataVector<T>::getFilters() const {
 }
 
 template<typename T>
-double DataVector<T>::getDistance(DataVector<T> *other) const {
-    return euclidean_distance(this->components, other->getComponents());
+double DataVector<T>::getDistance(DataVector<T> *other, const double min_dist) const {
+    return squared_euclidean_distance(this->components, other->getComponents(), min_dist);
 }
 
 template<typename T>
-double DataVector<T>::getDistance(vector<T> &other) const {
-    return euclidean_distance(this->components, other);
+double DataVector<T>::getDistance(vector<T> &other, const double min_dist) const {
+    return squared_euclidean_distance(this->components, other, min_dist);
 }
 
 template<typename T>

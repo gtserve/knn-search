@@ -65,7 +65,7 @@ public:
     void clearNeighbours(int id);
 
     //testing new unordered map for storing distances
-    long double getDistance(int x, int y);
+    long double getDistance(int x, int y, double min_dist = 0.0);
 
     void addDistance(int x, int y, long double distance);
 
@@ -221,7 +221,7 @@ void graph<T>::clearNeighbours(const int id) {
 }
 
 template<typename T>
-long double graph<T>::getDistance(int x, int y) {
+long double graph<T>::getDistance(const int x, const int y, const double min_dist) {
     if (x == y)
         return 0.0;
 
@@ -233,7 +233,7 @@ long double graph<T>::getDistance(int x, int y) {
     if (dist == 0.0) {
         vector_node<T> *Na = this->get_node(a);
         vector_node<T> *Nb = this->get_node(b);
-        dist = Na->getDistance(Nb);
+        dist = Na->getDistance(Nb, min_dist);
         // distances_map[{a, b}] = dist;
     }
     return dist;

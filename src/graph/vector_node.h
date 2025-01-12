@@ -26,9 +26,9 @@ public:
 
     vector<T> getComponents() const;
 
-    double getDistance(vector_node<T>* other) const;
+    double getDistance(vector_node<T>* other, double min_dist = 0.0) const;
 
-    double getDistance(vector<T> &other) const;
+    double getDistance(vector<T> &other, double min_dist = 0.0) const;
 
     set<float> getFilters() const;
 
@@ -63,14 +63,14 @@ vector<T> vector_node<T>::vector_node::getComponents() const {
 }
 
 template<typename T>
-double vector_node<T>::getDistance(vector_node<T> *other) const {
+double vector_node<T>::getDistance(vector_node<T> *other, const double min_dist) const {
     vector<T> other_comp = other->getComponents();
-    return this->data_vector->getDistance(other_comp);
+    return this->data_vector->getDistance(other_comp, min_dist);
 }
 
 template<typename T>
-double vector_node<T>::getDistance(vector<T> &other) const {
-    return this->data_vector->getDistance(other);
+double vector_node<T>::getDistance(vector<T> &other, const double min_dist) const {
+    return this->data_vector->getDistance(other, min_dist);
 }
 
 template<typename T>

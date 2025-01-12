@@ -19,16 +19,13 @@
 using namespace std;
 
 //when adding to sets sort by the second value of the pair(node_id,euclidean_distance) to be inserted
-struct compare_by_second_value
-{
-    bool operator()(const pair<int, double>& p1, const pair<int, double>& p2) const;
+struct compare_by_second_value {
+    bool operator()(const pair<int, double> &p1, const pair<int, double> &p2) const;
 };
 
-struct PairHash
-{
-    template <class T1, class T2>
-    size_t operator()(const pair<T1, T2>& p) const
-    {
+struct PairHash {
+    template<class T1, class T2>
+    size_t operator()(const pair<T1, T2> &p) const {
         return hash<T1>()(p.first) ^ (hash<T2>()(p.second) << 1) * 0x9e3779b9;
     }
 };
@@ -41,42 +38,55 @@ std::string getCurrentTimestamp();
 
 // function to calculate euclidean distance between two vertices. Vertices may have many instances
 template<typename T>
-long double euclidean_distance(const vector<T> &parent_instances, const vector<T> &new_instances) {
-    if (parent_instances.size() != new_instances.size()) {
+long double euclidean_distance(
+    const vector<T> &v1,
+    const vector<T> &v2,
+    const double min_dist = 0.0
+) {
+    if (v1.size() != v2.size()) {
         cerr << "[ERROR]: Attempt to calculate distance between vectors of different size." << endl;
         return -0.1;
     }
 
     long double d = 0;
-    for (int i = 0; i < parent_instances.size(); ++i) {
-        long double diff = static_cast<long double>(parent_instances[i] - new_instances[i]);
+    for (int i = 0; i < v1.size(); ++i) {
+        long double diff = static_cast<long double>(v1[i] - v2[i]);
         d += diff * diff;
+
+        // if (min_dist != 0.0 && d > min_dist)
+        //     return d;
     }
 
     return sqrt(d);
 }
 
 template<typename T>
-long double squared_euclidean_distance(const vector<T> &parent_instances, const vector<T> &new_instances) {
-
-        if (parent_instances.size() != new_instances.size()) {
-            cerr << "[ERROR]: Attempt to calculate distance between vectors of different size." << endl;
-            return -0.1;
-        }
-
-        long double d = 0.0;
-
-        for (size_t i = 0; i < parent_instances.size(); ++i) {
-            long double diff = static_cast<long double>(parent_instances[i] - new_instances[i]);
-            d += diff * diff;
-        }
-
-        return d;
+long double squared_euclidean_distance(
+    const vector<T> &v1,
+    const vector<T> &v2,
+    const double min_dist = 0.0
+) {
+    if (v1.size() != v2.size()) {
+        cerr << "[ERROR]: Attempt to calculate distance between vectors of different size." << endl;
+        return -0.1;
     }
 
+    long double d = 0.0;
 
-template <typename T>
-int medoid(const vector<vector<T>> &vectors) {
+    for (size_t i = 0; i < v1.size(); ++i) {
+        long double diff = static_cast<long double>(v1[i] - v2[i]);
+        d += diff * diff;
+
+        // if (min_dist != 0.0 && d > min_dist)
+        //     return d;
+    }
+
+    return d;
+}
+
+
+template<typename T>
+int medoid(const vector<vector<T> > &vectors) {
     /* Returns the index of medoid vector.  */
 
     if (vectors.size() == 0) {
@@ -96,7 +106,7 @@ int medoid(const vector<vector<T>> &vectors) {
         long double distance = 0.0;
 
         for (int j = 0; j < vectors.size(); j++) {
-            distance += euclidean_distance(vectors[i], vectors[j]);
+            distance += squared_euclidean_distance(vectors[i], vectors[j]);
             // if (distance > min_distance)
             //     break;
         }
