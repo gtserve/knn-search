@@ -68,12 +68,12 @@ std::set<float> DataVector<T>::getFilters() const {
 
 template<typename T>
 double DataVector<T>::getDistance(DataVector<T> *other) const {
-    return squared_euclidean_distance(this->components, other->getComponents());
+    return euclidean_distance(this->components, other->getComponents());
 }
 
 template<typename T>
 double DataVector<T>::getDistance(vector<T> &other) const {
-    return squared_euclidean_distance(this->components, other);
+    return euclidean_distance(this->components, other);
 }
 
 template<typename T>
