@@ -53,8 +53,8 @@ long double euclidean_distance(
         long double diff = static_cast<long double>(v1[i] - v2[i]);
         d += diff * diff;
 
-        // if (min_dist != 0.0 && d > min_dist)
-        //     return d;
+        if (min_dist != 0.0 && d > min_dist)
+            return d;
     }
 
     return sqrt(d);
@@ -77,8 +77,8 @@ long double squared_euclidean_distance(
         long double diff = static_cast<long double>(v1[i] - v2[i]);
         d += diff * diff;
 
-        // if (min_dist != 0.0 && d > min_dist)
-        //     return d;
+        if (min_dist != 0.0 && d > min_dist)
+            return d;
     }
 
     return d;
@@ -107,8 +107,8 @@ int medoid(const vector<vector<T> > &vectors) {
 
         for (int j = 0; j < vectors.size(); j++) {
             distance += squared_euclidean_distance(vectors[i], vectors[j]);
-            // if (distance > min_distance)
-            //     break;
+            if (distance > min_distance)
+                break;
         }
 
         if (distance < min_distance) {

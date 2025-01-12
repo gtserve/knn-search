@@ -43,9 +43,9 @@ pair<set<int>, unordered_set<int> > greedy_graph_search(
         for (const int p: diff) {
             vector_node<T> *node_p = graph->get_node(p);
             if (vamana == true) {
-                cur_distance = graph->getDistance(p, query_id);
+                cur_distance = graph->getDistance(p, query_id, min_distance);
             } else {
-                cur_distance = node_p->getDistance(query_vector);
+                cur_distance = node_p->getDistance(query_vector, min_distance);
             }
             if (cur_distance < min_distance) {
                 min_distance = cur_distance;
@@ -156,9 +156,9 @@ pair<set<int>, unordered_set<int> > filtered_greedy_graph_search(
         for (const int p: diff) {
             vector_node<T> *node_p = graph->get_node(p);
             if (vamana == true) {
-                cur_distance = graph->getDistance(p, query_id);
+                cur_distance = graph->getDistance(p, query_id, min_distance);
             } else {
-                cur_distance = node_p->getDistance(query_vector);
+                cur_distance = node_p->getDistance(query_vector, min_distance);
             }
             if (cur_distance < min_distance) {
                 min_distance = cur_distance;
@@ -251,7 +251,7 @@ void robustPrune(
         long double min_distance = 1e10;
         for (const int c: V) {
             vector_node<T> *Nc = G->get_node(c);
-            long double candidate_distance = G->getDistance(c, p);
+            long double candidate_distance = G->getDistance(c, p, min_distance);
             if (candidate_distance < min_distance) {
                 min_distance = candidate_distance;
                 p_best = c;
@@ -287,7 +287,7 @@ void filteredRobustPrune(graph<T> *G, const int p, unordered_set<int> &V, const 
         int p_best;
         long double min_distance = 1e10;
         for (const int c: V) {
-            long double candidate_distance = G->getDistance(p, c);
+            long double candidate_distance = G->getDistance(p, c, min_distance);
             if (candidate_distance < min_distance) {
                 min_distance = candidate_distance;
                 p_best = c;
