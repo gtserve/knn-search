@@ -1,145 +1,87 @@
-# k23a-project
-Project for *'[K23A] Ανάπτυξη Λογισμικού για Πληροφοριακά Συστήματα'*
+# k-NN Search
 
-## Team
+A C++17 implementation of graph-based approximate *k*-nearest-neighbor search. The project builds and queries persistent indexes using three related algorithms:
 
-| Name               |     Α.Μ.      | Email                |
-|:-------------------|:-------------:|:---------------------|
-| Γεώργιος Τσερβένης | 1115201500164 | sdi1500164@di.uoa.gr |
-| Νικόλαος Τσόλκας   | 1115201600184 | sdi1600184@di.uoa.gr |
+- **Vamana** for unfiltered vector search
+- **Filtered Vamana** for queries constrained by filter values
+- **Stitched Vamana** for constructing a filtered index from per-filter subgraphs
 
-## Table of Contents
+The command-line tools can build an index, save it in a binary format, reload it for querying, and report recall against supplied ground-truth results. The repository also contains reusable graph, vector, input, and algorithm modules with unit tests.
 
-- [1st Part](#1st-part)
-  - [Download Datasets](#download-test-datasets)
-  - [Build](#build)
-  - [Run Main](#run-main)
-  - [Run Tests](#run-tests)
+## Requirements
 
-- [2nd Part](#2nd-part)
-
-- [3rd Part](#3rd-part)
-
-# 1st Part
-
-## Download Test Datasets
-To run the `main` function of this part of the project you'll need to download the **siftsmall** dataset from http://corpus-texmex.irisa.fr/
-
-- You can do so by running the following:
-    ```bash
-    $ curl -O ftp://ftp.irisa.fr/local/texmex/corpus/siftsmall.tar.gz
-    ```
-  
-- And extract the archived file:
-    ```bash
-    $ tar -xzvf siftsmall.tar.gz
-    ```
+- A C++17-compatible compiler
+- CMake 3.28 or newer
+- OpenMP
+- An internet connection during initial configuration so CMake can fetch GoogleTest
 
 ## Build
 
-- After cloning the repo `cd` into its directory.
-
-- Create a `build` directory:
-    ```bash
-    $ mkdir build
-    $ cd build
-    ```
-- Generate project build system:
-
-  ```bash
-  $ cmake ..
-  ```
-
-- Build project:
-   ```bash
-    $ cmake --build . 
-   ``` 
-
-Alternatively you can build a specific target / executable such as `main` like so:
-
-  ```bash
-  $ cmake --build . --target main
-  ```
-
-## Run Main
-The `main` function of this part of the project has to be run with the following flags/arguments:
-
-- `-f`: `<path_to_dataset_directory>`
-  - type: String 
-  - example: `/home/user/.../data/siftsmall`
-
-
-- `-a`: `<vamana_parameter_a`
-    - type: Float
-    - default: `2.0`
-
-
-- `-k`:
-    - type: Integer
-    - default: `10`
-
-
-- `-L`:
-    - type: Integer
-    - default: `10`
-
-
-- `-R`:
-    - type: Integer
-    - default: `10`
-
-An example of a run `main` is:
 ```bash
-./main -f "./blah/blah/.../data/siftsmall" -a 1.1 -k 100 -L 100 -R 15
+git clone https://github.com/gtserve/knn-search.git
+cd knn-search
+cmake -S . -B build
+cmake --build build
 ```
 
-The output of the above was:
-```bash
-Read vectors! [Time: 14ms]
-Run Vamana! [Time: 1033s]
-Run Greedy! [Time: 76ms]
-k-nearest neighbours [100]: 97 106 107 121 124 146 149 190 224 287 292 348 370 420 492 598 641 696 816 882 924 942 1038 1045 1064 1156 1254 1272 1292 1295 1317 1370 1625 1682 1689 1710 1756 1884 1895 1916 1995 2005 2154 2176 2436 2456 2648 2763 2774 2776 2837 2852 2890 3013 3043 3066 3138 3210 3237 3449 3515 3530 3543 3553 3615 3625 3687 3752 3814 4009 4050 4058 4064 4094 4096 4125 4263 4293 4320 4321 4527 4938 5231 5307 5375 6139 6630 6837 7245 8731 8887 9211 9541 9576 9701 9734 9758 9806 9814 9825
-Recall: 0.96
-[Total Time: 17min]
-```
-*(Here the calculation of the medoid was ignored, which have added ~6min to total runtime)*
+This creates separate index and query executables for each implementation:
 
+| Algorithm | Build index | Query index |
+| --- | --- | --- |
+| Vamana | `index_v` | `query_index_v` |
+| Filtered Vamana | `index_fv` | `query_index_fv` |
+| Stitched Vamana | `index_sv` | `query_index_sv` |
 
-## Run Tests
+## Data formats
 
-After you have built the whole project, you can run all tests by running in the `build` directory:
-```bash
-  $ ctest
-```
-The output of the above will be something like this:
+The unfiltered tools read [TexMex](http://corpus-texmex.irisa.fr/) `.fvecs` vector files and `.ivecs` ground-truth files. The filtered tools use the binary data, query, and ground-truth layout handled by the project's SIGMOD input reader. Datasets and generated indexes are not included in the repository.
+
+## Usage
+
+Build a standard Vamana index from a TexMex vector file:
 
 ```bash
-  Test project /home/gtserve/Code/k23a-project/build
-      Start 1: TestInput
-  1/5 Test #1: TestInput ........................   Passed    0.00 sec
-      Start 2: TestDataVector
-  2/5 Test #2: TestDataVector ...................   Passed    0.00 sec
-      Start 3: TestUtil
-  3/5 Test #3: TestUtil .........................   Passed    0.00 sec
-      Start 4: TestGraph
-  4/5 Test #4: TestGraph ........................   Passed    0.00 sec
-      Start 5: TestVamana
-  5/5 Test #5: TestVamana .......................   Passed    0.00 sec
+./build/index_v \
+  --data data/siftsmall/siftsmall_base.fvecs \
+  --output data/indexes/siftsmall.bin \
+  -a 1.2 -L 120 -R 50
 ```
 
-If you want a more analytical output you can run:
+Query the saved index and calculate recall:
+
 ```bash
-  $ ctest --verbose
+./build/query_index_v \
+  --index data/indexes/siftsmall.bin \
+  --queries data/siftsmall/siftsmall_query.fvecs \
+  --gtruth data/siftsmall/siftsmall_groundtruth.ivecs \
+  -k 100 -L 120
 ```
 
-If you want to run a specific test:
+Here, `k` is the number of neighbors returned, `L` controls the search-list size, `R` bounds graph degree, and `a` is the RobustPrune parameter. Run an index or query executable with `--help` to see its supported arguments. The repository's `vamana.sh`, `filtered_vamana.sh`, and `stitched_vamana.sh` scripts provide complete index-and-query examples; adjust their executable and dataset paths before running them.
+
+## Tests
+
+After building, run the test suite from the repository root:
+
 ```bash
-  $ ctest -R <TestName>
+ctest --test-dir build --output-on-failure
 ```
 
-# 2nd Part
+The tests cover vector input, data-vector operations, utility functions, graph behavior, and Vamana search routines.
 
+## Project structure
 
-# 3rd Part
+```text
+src/
+├── data_vectors/  Vector data types and distance operations
+├── graph/         Graph nodes, edges, filters, and serialization
+├── input/         TexMex and filtered binary input readers
+├── utility/       Shared helper functions
+└── vamana/        Search, pruning, and index-construction algorithms
+```
 
+This project was developed for the course *Software Development for Information Systems* (`K23A`) by Georgios Tservenis and Nikolaos Tsolkas.
 
+## License
+
+Licensed under the [MIT License](LICENSE).
